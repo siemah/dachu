@@ -10,12 +10,12 @@ import { getIcon } from '../helpers/ui';
 export function TabBar({ state, descriptors, insets, navigation }: BottomTabBarProps) {
   const containerStyle = {
     paddingBottom: insets.bottom,
-    backgroundColor: "#e1cdff"
+    backgroundColor: "#c8c0ff"
   };
 
   return (
     <Box style={containerStyle}>
-      <Box className="flex-row py-2 border-t border-gray-900">
+      <Box className="flex-row py-2 border-t border-slate-900">
         {
           state.routes.map((route, index) => {
             if (["_sitemap", "[...404]"].includes(route.name)) return null;

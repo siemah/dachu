@@ -7,7 +7,7 @@ export default function _layout() {
     headerShown: false
   };
   const sceneContainerStyle = {
-    backgroundColor: "#e1cdff"
+    backgroundColor: "#c8c0ff"
   };
 
   return (
