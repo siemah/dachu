@@ -1,0 +1,8 @@
+{
+  "scheme": "dachu",
+  "name": "Dachu",
+  "slug": "dachu",
+  "web": {
+    "bundler": "metro"
+  }
+}
