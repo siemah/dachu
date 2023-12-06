@@ -3,41 +3,76 @@ import Box from '../components/box'
 import Text from '../components/text'
 import Container from '../components/container'
 import { TabView, SceneMap, SceneRendererProps, NavigationState } from 'react-native-tab-view';
-import { FlatList, Text as RnText, useWindowDimensions } from 'react-native';
+import { FlatList, useWindowDimensions } from 'react-native';
 import Button from '../components/button';
 import tailwind from 'twrnc';
 import TextHighlight from '../components/text-highlight';
 import CardImage from '../components/card-image';
-import { Image } from 'expo-image';
+import { Ionicons } from '@expo/vector-icons';
 
 const FirstRoute = () => (
   <FlatList
     data={[]}
     renderItem={props => null}
     ListHeaderComponent={() => (
-      <Container childrenClassName='gap-4'>
-        <Box className='flex-row flex-wrap pt-4'>
-          <TextHighlight
-            highlightColor='#77f5c3'
-          >
-            headline
-          </TextHighlight>
-        </Box>
-        <Text className={`text-3xl font-bold text-slate-1000`}>
-          —Biden vows to codify Roe “We Gotta Go“
-        </Text>
-        <CardImage
-          className={"h-56 md:h-80"}
-          contentFit='cover'
-          source={"https://picsum.photos/seed/696/3000/2000"}
-        />
-        <Text className='mt-2'>
-          <Text className={`text-md mt-2 text-slate-700`}>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas nulla expedita quidem laborum nemo similique repellendus ratione minus voluptatum adipisci, provident repellat ad, sed rerum. Officia quis eius sunt deleniti!{`....`}
+      <Box className='gap-8 mb-4'>
+        <Container childrenClassName='gap-4'>
+          <Box className='flex-row flex-wrap pt-4'>
+            <TextHighlight
+              highlightColor='#77f5c3'
+            >
+              headline
+            </TextHighlight>
+          </Box>
+          <Text className={`text-3xl font-bold text-slate-1000`}>
+            —Biden vows to codify Roe “We Gotta Go“
           </Text>
-          <Text className='font-bold text-slate-800 underline'>More</Text>
-        </Text>
-      </Container>
+          <CardImage
+            className={"h-56"}
+            contentFit='cover'
+            source={"https://picsum.photos/seed/696/3000/2000"}
+          />
+          <Text className='mt-2'>
+            <Text className={`text-md mt-2 text-slate-700`}>
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas nulla expedita quidem laborum nemo similique repellendus ratione minus voluptatum adipisci, provident repellat ad, sed rerum. Officia quis eius sunt deleniti!{`....`}
+            </Text>
+            <Text className='font-bold text-slate-800 underline'>More</Text>
+          </Text>
+          <Box className='flex-row justify-between items-center gap-4'>
+            <Box className='flex-1 flex-row gap-4 items-center'>
+              <CardImage
+                source={"https://picsum.photos/seed/150/150"}
+                contentFit='cover'
+                className={`h-14 w-14`}
+                borderContainerClassName={`border-2 left-2 top-2`}
+              />
+              <Box className='gap-1'>
+                <Text className='font-bold text-sm'>
+                  Provider Name
+                </Text>
+                <Box className='flex-row gap-1 items-center'>
+                  <Ionicons
+                    size={20}
+                    color={"#111111"}
+                    name={'time-outline'}
+                  />
+                  <Text>2 hours ago</Text>
+                </Box>
+              </Box>
+            </Box>
+            <Box>
+              <Button>
+                <Ionicons
+                  name='heart-outline'
+                  color={'#111111'}
+                  size={30}
+                />
+              </Button>
+            </Box>
+          </Box>
+        </Container>
+        <Box className='border-t border-slate-600' />
+      </Box>
     )}
   />
 );
@@ -57,7 +92,7 @@ const renderScene = SceneMap({
 
 const HomeTabBar = (props: SceneRendererProps & { navigationState: NavigationState<any>; }) => (
   <Container
-    className='border-t border-b border-slate-900'
+    className='border-t border-b border-slate-600'
     childrenClassName='flex-row gap-4'
   >
     {

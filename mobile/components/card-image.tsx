@@ -4,12 +4,12 @@ import tailwind from 'twrnc'
 import { WithClassName } from '../types/ui'
 import Box from './box'
 
-export default function CardImage({ style, className, ...props }: WithClassName<typeof Image>) {
+export default function CardImage({ style, className, borderContainerClassName = '', ...props }: WithClassName<typeof Image> & { borderContainerClassName?: string }) {
   return (
-    <Box className='flex-row w-full'>
-      <Box className={`absolute border-[3px] border-slate-900 left-3 top-4 h-full w-full`} />
+    <Box className='flex-row'>
+      <Box className={`absolute border-[3px] border-slate-900 left-3 top-4 h-full w-full ${borderContainerClassName}`} />
       <Image
-        style={[tailwind.style(`flex-1 w-full ${className}`), style]}
+        style={[tailwind.style(`flex-1 ${className}`), style]}
         contentFit='cover'
         {...props}
       />

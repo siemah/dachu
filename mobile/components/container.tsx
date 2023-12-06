@@ -9,7 +9,7 @@ export default function Container({ children, childrenClassName, className, styl
       className={className}
     >
       <Box
-        className={`max-w-[1080px] px-6 md:px-6 ${childrenClassName}`}
+        className={`max-w-[1080px] px-6 ${childrenClassName}`}
       >
         {children}
       </Box>
