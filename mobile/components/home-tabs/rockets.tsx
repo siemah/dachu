@@ -1,4 +1,4 @@
-import { FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, Platform } from 'react-native'
 import React, { useEffect } from 'react'
 import Box from '../box'
 import Container from '../container'
@@ -16,6 +16,7 @@ import { getHomeData } from '../../services/home'
 import Card from '../card'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime';
+import LoadingIndicator from '../loading-indicator'
 dayjs.extend(relativeTime);
 
 export default function RocketsHomeTab() {
@@ -88,6 +89,12 @@ export default function RocketsHomeTab() {
           </Container>
         )
     );
+  }
+
+  if (query.isLoading === true) {
+    return (
+      <LoadingIndicator color={"#282055"} />
+    )
   }
 
   return (
