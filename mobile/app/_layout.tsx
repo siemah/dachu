@@ -1,7 +1,15 @@
 import React from 'react'
 import { Tabs } from 'expo-router'
 import { TabBar } from '../components/tab-bar';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: Infinity,
+    }
+  }
+});
 export default function _layout() {
   const screenOptions = {
     headerShown: false
@@ -11,13 +19,15 @@ export default function _layout() {
   };
 
   return (
+    <QueryClientProvider client={queryClient}>
     <Tabs
       tabBar={TabBar}
       screenOptions={screenOptions}
       sceneContainerStyle={sceneContainerStyle}
-    >
+      >
       <Tabs.Screen name='index' />
       <Tabs.Screen name='settings' />
     </Tabs>
+      </QueryClientProvider>
   )
 }

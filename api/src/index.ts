@@ -10,7 +10,7 @@ app
   .use('*', poweredBy())
   .use('*', cors());
 
-app.get('/main', async (c) => {
+app.get('/home', async (c) => {
   // todo: display Rockets, C's and LFC gamess
   const games = await getGames();
   // todo: get Rockets news

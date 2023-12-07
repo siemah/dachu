@@ -18,7 +18,12 @@ export default async function getRocketsNews() {
     date: article.date_gmt,
     link: article.link,
     title: article.title.rendered,
-    image: article.jetpack_featured_media_url
+    image: article.jetpack_featured_media_url,
+    provider: {
+      name: "Rockets wire",
+      image: "https://pbs.twimg.com/profile_images/910372928382029824/bJpUPj1l_400x400.jpg",
+      link: "https://rocketswire.usatoday.com"
+    }
   }))
 
   return articles;

@@ -9,6 +9,8 @@ import tailwind from 'twrnc';
 import { SplashScreen } from 'expo-router';
 import RocketsHomeTab from '../components/home-tabs/rockets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useQuery } from 'react-query';
+import { getHomeData } from '../services/home';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,6 +60,10 @@ const HomeTabBar = (props: SceneRendererProps & { navigationState: NavigationSta
 );
 
 export default function Index() {
+  const query = useQuery({
+    queryKey: ["home"],
+    queryFn: getHomeData,
+  });
   const { top } = useSafeAreaInsets();
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
@@ -66,7 +72,6 @@ export default function Index() {
     { key: 'third', title: 'Celtics' },
     { key: 'second', title: 'Liverpool' },
   ]);
-  const [isReady, setReady] = React.useState(false);
   const navigationState = {
     index, routes
   };
@@ -75,12 +80,10 @@ export default function Index() {
   };
   React.useEffect(() => {
     // Perform some sort of async data or asset fetching.
-    setTimeout(() => {
-      // When all loading is setup, unmount the splash screen component.
+    if (query.isLoading === false) {
       SplashScreen.hideAsync();
-      setReady(true);
-    }, 1000);
-  }, []);
+    }
+  }, [query.isLoading]);
 
   return (
     <Box className={`flex-1 gap-4 pt-4 mt-[${top}px]`}>
