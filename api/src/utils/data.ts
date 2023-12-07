@@ -6,10 +6,8 @@
  */
 export function extractGamesFromOnefootball(containers: any[]) {
   let games = containers[containers.length - 1]
-    ?.type
     ?.fullWidth
     ?.component
-    ?.contentType
     ?.matchCardsListsAppender
     ?.lists;
   const results = games.map(game => {

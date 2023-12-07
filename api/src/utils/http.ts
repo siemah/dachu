@@ -22,7 +22,6 @@ export default async function httpRequest<Response = any>(config: RequestConfigT
     const request = await fetch(config.url, config.requestConfig);
     response = await request.json();
   } catch (error) {
-    console.log("<<<<<error>>>>>" , error)
     let _error = error as Error;
     const customErrorResponse: Record<string, any> = {
       code: "failed",

@@ -10,7 +10,7 @@ export async function getGames() {
   const response = await Promise.allSettled([
     // LFC games
     httpRequest({
-      url: "https://onefootball.com/_next/data/b32256f6afd2/en/team/liverpool-18/fixtures.json?team-id=liverpool-18&entity-page=fixtures"
+      url: "https://api.onefootball.com/web-experience/en/team/liverpool-18/fixtures"
     }),
     // rockets games
     httpRequest({
@@ -22,7 +22,7 @@ export async function getGames() {
     })
   ]);
   const [
-    { pageProps: { containers: lfcContainer } },
+    { containers: lfcContainer },
     { doc: rocketsDoc },
     { doc: celticssDoc }
   ] = handleAllSettledResults(response);
