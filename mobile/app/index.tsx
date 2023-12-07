@@ -3,79 +3,14 @@ import Box from '../components/box'
 import Text from '../components/text'
 import Container from '../components/container'
 import { TabView, SceneMap, SceneRendererProps, NavigationState } from 'react-native-tab-view';
-import { FlatList, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import Button from '../components/button';
 import tailwind from 'twrnc';
-import TextHighlight from '../components/text-highlight';
-import CardImage from '../components/card-image';
-import { Ionicons } from '@expo/vector-icons';
+import { SplashScreen } from 'expo-router';
+import RocketsHomeTab from '../components/home-tabs/rockets';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const FirstRoute = () => (
-  <FlatList
-    data={[]}
-    renderItem={props => null}
-    ListHeaderComponent={() => (
-      <Box className='gap-8 mb-4'>
-        <Container childrenClassName='gap-4'>
-          <Box className='flex-row flex-wrap pt-4'>
-            <TextHighlight
-              highlightColor='#77f5c3'
-            >
-              headline
-            </TextHighlight>
-          </Box>
-          <Text className={`text-3xl font-bold text-slate-1000`}>
-            —Biden vows to codify Roe “We Gotta Go“
-          </Text>
-          <CardImage
-            className={"h-56"}
-            contentFit='cover'
-            source={"https://picsum.photos/seed/696/3000/2000"}
-          />
-          <Text className='mt-2'>
-            <Text className={`text-md mt-2 text-slate-700`}>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quas nulla expedita quidem laborum nemo similique repellendus ratione minus voluptatum adipisci, provident repellat ad, sed rerum. Officia quis eius sunt deleniti!{`....`}
-            </Text>
-            <Text className='font-bold text-slate-800 underline'>More</Text>
-          </Text>
-          <Box className='flex-row justify-between items-center gap-4'>
-            <Box className='flex-1 flex-row gap-4 items-center'>
-              <CardImage
-                source={"https://picsum.photos/seed/150/150"}
-                contentFit='cover'
-                className={`h-14 w-14`}
-                borderContainerClassName={`border-2 left-2 top-2`}
-              />
-              <Box className='gap-1'>
-                <Text className='font-bold text-sm'>
-                  Provider Name
-                </Text>
-                <Box className='flex-row gap-1 items-center'>
-                  <Ionicons
-                    size={20}
-                    color={"#111111"}
-                    name={'time-outline'}
-                  />
-                  <Text>2 hours ago</Text>
-                </Box>
-              </Box>
-            </Box>
-            <Box>
-              <Button>
-                <Ionicons
-                  name='heart-outline'
-                  color={'#111111'}
-                  size={30}
-                />
-              </Button>
-            </Box>
-          </Box>
-        </Container>
-        <Box className='border-t border-slate-600' />
-      </Box>
-    )}
-  />
-);
+SplashScreen.preventAutoHideAsync();
 
 const SecondRoute = () => (
   <Box style={{ backgroundColor: '#673ab7', height: 100 }} />
@@ -85,7 +20,7 @@ const ThirdRoute = () => (
 );
 
 const renderScene = SceneMap({
-  first: FirstRoute,
+  first: RocketsHomeTab,
   second: SecondRoute,
   third: ThirdRoute,
 });
@@ -123,6 +58,7 @@ const HomeTabBar = (props: SceneRendererProps & { navigationState: NavigationSta
 );
 
 export default function Index() {
+  const { top } = useSafeAreaInsets();
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -130,18 +66,33 @@ export default function Index() {
     { key: 'third', title: 'Celtics' },
     { key: 'second', title: 'Liverpool' },
   ]);
+  const [isReady, setReady] = React.useState(false);
+  const navigationState = {
+    index, routes
+  };
+  const initialLayout = {
+    width: layout.width,
+  };
+  React.useEffect(() => {
+    // Perform some sort of async data or asset fetching.
+    setTimeout(() => {
+      // When all loading is setup, unmount the splash screen component.
+      SplashScreen.hideAsync();
+      setReady(true);
+    }, 1000);
+  }, []);
 
   return (
-    <Box className='flex-1 gap-4 pt-4'>
+    <Box className={`flex-1 gap-4 pt-4 mt-[${top}px]`}>
       <Container>
         <Text className='text-4xl font-bold'>Dachu</Text>
       </Container>
       <Box className='flex-1'>
         <TabView
-          navigationState={{ index, routes }}
+          navigationState={navigationState}
           renderScene={renderScene}
           onIndexChange={setIndex}
-          initialLayout={{ width: layout.width, }}
+          initialLayout={initialLayout}
           renderTabBar={HomeTabBar}
           lazy
         />

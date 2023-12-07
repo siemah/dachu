@@ -2,7 +2,7 @@ import React from 'react'
 import { WithClassName } from '../types/ui'
 import Box from './box';
 
-export default function Container({ children, childrenClassName, className, style }: WithClassName<typeof Box> & {childrenClassName?:string}) {
+export default function Container({ children, childrenClassName = '', className = '', style }: WithClassName<typeof Box> & {childrenClassName?:string}) {
   return (
     <Box
       style={style}

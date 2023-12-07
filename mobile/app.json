@@ -2,7 +2,26 @@
   "scheme": "dachu",
   "name": "Dachu",
   "slug": "dachu",
+  "version": "1.0.0",
+  "orientation": "portrait",
+  "icon": "./assets/images/icon.png",
+  "userInterfaceStyle": "light",
+  "splash": {
+    "image": "./assets/images/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  },
+  "android": {
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/images/adaptive-icon.png",
+      "backgroundColor": "#ffffff"
+    }
+  },
   "web": {
-    "bundler": "metro"
+    "bundler": "metro",
+    "favicon": "./assets/icon.png"
+  },
+  "extra": {
+    "supportsRTL": true
   }
 }
