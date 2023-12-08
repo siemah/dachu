@@ -15,7 +15,7 @@ app.get('/home', async (c) => {
   // todo: display Rockets, C's and LFC gamess
   const games = await getGames();
   // todo: get Rockets news
-  const rockets = await getRocketsNews();
+  const rockets = await getRocketsNews(c.req);
   const celtics = await getCelticsNews();
   // todo: get Celtics news
   // todo: get LFC news
