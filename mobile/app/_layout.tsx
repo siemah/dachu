@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: Infinity,
+      cacheTime: 3600000,
+      staleTime: 900000
     }
   }
 });
@@ -20,14 +21,14 @@ export default function _layout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-    <Tabs
-      tabBar={TabBar}
-      screenOptions={screenOptions}
-      sceneContainerStyle={sceneContainerStyle}
+      <Tabs
+        tabBar={TabBar}
+        screenOptions={screenOptions}
+        sceneContainerStyle={sceneContainerStyle}
       >
-      <Tabs.Screen name='index' />
-      <Tabs.Screen name='settings' />
-    </Tabs>
-      </QueryClientProvider>
+        <Tabs.Screen name='index' />
+        <Tabs.Screen name='settings' />
+      </Tabs>
+    </QueryClientProvider>
   )
 }

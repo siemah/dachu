@@ -25,7 +25,8 @@ export default function Card({ title, subtitle, image, preview, className = '', 
         <CardImage
           className={"h-56"}
           contentFit='cover'
-          source={image} />
+          source={image}
+        />
         {
           !!preview && (
             <Text className='mt-2'>

@@ -11,20 +11,15 @@ import RocketsHomeTab from '../components/home-tabs/rockets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from 'react-query';
 import { getHomeData } from '../services/home';
+import CelticsHomeTab from '../components/home-tabs/celtics';
+import LiverpoolHomeTab from '../components/home-tabs/liverpool';
 
 SplashScreen.preventAutoHideAsync();
 
-const SecondRoute = () => (
-  <Box style={{ backgroundColor: '#673ab7', height: 100 }} />
-);
-const ThirdRoute = () => (
-  <Box style={{ backgroundColor: '#67fab7', height: 100 }} />
-);
-
 const renderScene = SceneMap({
   first: RocketsHomeTab,
-  second: SecondRoute,
-  third: ThirdRoute,
+  second: CelticsHomeTab,
+  third: LiverpoolHomeTab,
 });
 
 const HomeTabBar = (props: SceneRendererProps & { navigationState: NavigationState<any>; }) => (
@@ -61,7 +56,7 @@ const HomeTabBar = (props: SceneRendererProps & { navigationState: NavigationSta
 
 export default function Index() {
   const query = useQuery({
-    queryKey: ["home"],
+    queryKey: "home",
     queryFn: getHomeData,
   });
   const { top } = useSafeAreaInsets();
@@ -69,8 +64,8 @@ export default function Index() {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: 'first', title: 'Rockets' },
-    { key: 'third', title: 'Celtics' },
-    { key: 'second', title: 'Liverpool' },
+    { key: 'second', title: 'Celtics' },
+    { key: 'third', title: 'Liverpool' },
   ]);
   const navigationState = {
     index, routes
