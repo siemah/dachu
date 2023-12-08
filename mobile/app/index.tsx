@@ -9,8 +9,8 @@ import tailwind from 'twrnc';
 import { SplashScreen } from 'expo-router';
 import RocketsHomeTab from '../components/home-tabs/rockets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useQuery } from 'react-query';
-import { getHomeData } from '../services/home';
+// import { useQuery } from 'react-query';
+// import { getHomeData } from '../services/home';
 import CelticsHomeTab from '../components/home-tabs/celtics';
 import LiverpoolHomeTab from '../components/home-tabs/liverpool';
 
@@ -55,10 +55,10 @@ const HomeTabBar = (props: SceneRendererProps & { navigationState: NavigationSta
 );
 
 export default function Index() {
-  const query = useQuery({
-    queryKey: "home",
-    queryFn: getHomeData,
-  });
+  // const query = useQuery({
+  //   queryKey: "home",
+  //   queryFn: getHomeData,
+  // });
   const { top } = useSafeAreaInsets();
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
@@ -73,15 +73,21 @@ export default function Index() {
   const initialLayout = {
     width: layout.width,
   };
-  React.useEffect(() => {
-    // Perform some sort of async data or asset fetching.
-    if (query.isLoading === false) {
-      SplashScreen.hideAsync();
-    }
-  }, [query.isLoading]);
+  const onLayoutReady = React.useCallback(() => {
+    SplashScreen.hideAsync();
+  }, []);
+  // React.useEffect(() => {
+  // Perform some sort of async data or asset fetching.
+  // if (query.isLoading === false) {
+  // SplashScreen.hideAsync();
+  // }
+  // }, [query.isLoading]);
 
   return (
-    <Box className={`flex-1 gap-4 pt-4 mt-[${top}px]`}>
+    <Box
+      className={`flex-1 gap-4 pt-4 mt-[${top}px]`}
+      onLayout={onLayoutReady}
+    >
       <Container>
         <Text className='text-4xl font-bold'>Dachu</Text>
       </Container>
