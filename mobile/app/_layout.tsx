@@ -1,6 +1,4 @@
-import React from 'react'
-import { Tabs } from 'expo-router'
-import { TabBar } from '../components/tab-bar';
+import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient({
@@ -11,24 +9,14 @@ const queryClient = new QueryClient({
     }
   }
 });
-export default function _layout() {
+
+export default function StackLayout() {
   const screenOptions = {
     headerShown: false
   };
-  const sceneContainerStyle = {
-    backgroundColor: "#c8c0ff"
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
-      <Tabs
-        tabBar={TabBar}
-        screenOptions={screenOptions}
-        sceneContainerStyle={sceneContainerStyle}
-      >
-        <Tabs.Screen name='index' />
-        <Tabs.Screen name='settings' />
-      </Tabs>
+      <Stack screenOptions={screenOptions} />
     </QueryClientProvider>
-  )
+  );
 }

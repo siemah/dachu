@@ -85,7 +85,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
             <HorizontalCard
               title={article.title}
               image={article.image}
-              subtitle={"Wire rockets"}
+              subtitle={article?.provider?.name}
             />
           </Container>
         )
