@@ -3,6 +3,7 @@ import { poweredBy } from 'hono/powered-by'
 import { cors } from 'hono/cors'
 import { getGames } from './services/games';
 import getRocketsNews from './services/news/rockets';
+import getCelticsNews from './services/news/celtics';
 
 const app = new Hono()
 
@@ -15,6 +16,7 @@ app.get('/home', async (c) => {
   const games = await getGames();
   // todo: get Rockets news
   const rockets = await getRocketsNews();
+  const celtics = await getCelticsNews();
   // todo: get Celtics news
   // todo: get LFC news
   // todo: get all basketball related news
@@ -22,7 +24,8 @@ app.get('/home', async (c) => {
   return c.json({
     games,
     articles: {
-      rockets
+      rockets,
+      celtics
     }
   });
 })
