@@ -19,7 +19,8 @@
   },
   "web": {
     "bundler": "metro",
-    "favicon": "./assets/icon.png"
+    "favicon": "./assets/images/icon.png",
+    
   },
   "extra": {
     "supportsRTL": true
