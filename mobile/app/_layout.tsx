@@ -1,5 +1,7 @@
-import { Stack } from 'expo-router';
+import { Stack, usePathname } from 'expo-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import * as NavigationBar from 'expo-navigation-bar';
+import { useEffect } from 'react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,9 +13,20 @@ const queryClient = new QueryClient({
 });
 
 export default function StackLayout() {
+  const pathname = usePathname();
   const screenOptions = {
     headerShown: false
   };
+
+  useEffect(() => {
+    if (pathname.includes("/article/")) {
+      NavigationBar.setBackgroundColorAsync("#bfecff");
+    } else {
+      NavigationBar.setBackgroundColorAsync("#c8c0ff");
+    }
+    NavigationBar.setButtonStyleAsync("dark")
+  }, [pathname]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Stack screenOptions={screenOptions} />
