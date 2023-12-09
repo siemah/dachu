@@ -12,7 +12,7 @@ class Scraper {
     return this
   }
 
-  async fetch(url, options?: any) {
+  async fetch(url, options?: RequestInit<RequestInitCfProperties>) {
     this.url = url
     this.response = await fetch(url, {
       cf: {
@@ -104,7 +104,7 @@ class Scraper {
         this.attr = attr
       }
 
-      element(element:Element) {
+      element(element: Element) {
         if (this.value.length && isSingle) return;
 
         this.value.push(element.getAttribute(this.attr))

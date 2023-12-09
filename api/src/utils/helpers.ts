@@ -6,11 +6,12 @@ import Scraper from "./scraper";
  * @param req Received request
  * @returns an instance from the scraper
  */
-export async function initScraper(req: Request, url: string) {
+export async function initScraper(req: Request, url: string, options?:RequestInit<RequestInitCfProperties>) {
   const scraper = await (new Scraper()).fetch(
     url,
     {
-      headers: req.headers
+      headers: req.headers,
+      ...(options || {})
     }
   );
   return scraper;
