@@ -10,15 +10,20 @@ import TextHighlight from '../../components/text-highlight';
 import CardImage from '../../components/card-image';
 import Text from '../../components/text';
 import ArticlePlaceholder from '../../components/article-placeholder';
+import { useEffect } from 'react';
+import globalLinks from '../../config/links';
 
 export default function Article() {
   const { top, bottom } = useSafeAreaInsets();
-  const { canGoBack, goBack } = useNavigation();
+  const { canGoBack, goBack, navigate } = useNavigation();
   const params = useGlobalSearchParams();
 
   const onGoBack = () => {
     if (canGoBack()) {
       goBack()
+    } else {
+      // @ts-ignore
+      navigate("index");
     }
   }
 
@@ -27,6 +32,18 @@ export default function Article() {
       await openURL(params?.link)
     }
   }
+
+  useEffect(() => {
+    async function load() {
+      const link = encodeURIComponent(`${params.link}`);
+      fetch(`${globalLinks.article}/${params.provider}/${link}`);
+    }
+    load();
+  
+    return () => {
+    }
+  }, []);
+  
 
   return (
     <Box className={`flex-1 bg-[#bfecff] pt-4 pt-[${top}px] pb-[${bottom}px]`}    >

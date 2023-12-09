@@ -34,7 +34,8 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
         image: article.image,
         title: article.title,
         link: article.link,
-        subtitle: screen
+        provider: article?.provider?.name,
+        subtitle: screen,
       }
     };
 
