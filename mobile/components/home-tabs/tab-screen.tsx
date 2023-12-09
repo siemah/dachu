@@ -28,6 +28,16 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
   });
   const articles = query?.data?.articles?.[screen] || [];
   const renderItem = ({ item: article, index }: FlatListRender<Article>) => {
+    const href = {
+      pathname: `/article/${article.id}`,
+      params: {
+        image: article.image,
+        title: article.title,
+        link: article.link,
+        subtitle: screen
+      }
+    };
+
     return (
       index === 0
         ? (
@@ -36,6 +46,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
             image={article.image}
             subtitle={article?.provider?.name}
             preview={article?.preview || article.title}
+            href={href}
           >
             <Box className='flex-row items-center gap-4'>
               <Box className='flex-1 flex-row gap-4 items-center'>
@@ -86,6 +97,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
               title={article.title}
               image={article.image}
               subtitle={article?.provider?.name}
+              href={href}
             />
           </Container>
         )

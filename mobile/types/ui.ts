@@ -12,14 +12,7 @@ export interface FlatListRender<T> {
 
 export type CardProps =
   WithClassName<typeof Box> &
-  Omit<Article, "id" | "category"> &
-  {
-    subtitle?: string;
-    preview?: string;
-  }
-export type CardVProps =
-  WithClassName<typeof Box> &
-  Pick<LinkProps, "href">&
+  Pick<LinkProps, "href"> &
   Omit<Article, "id" | "category"> &
   {
     subtitle?: string;

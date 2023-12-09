@@ -1,23 +1,38 @@
-import React from 'react'
 import Container from '../../components/container'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Box from '../../components/box';
 import { ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/button';
+import { useGlobalSearchParams, useNavigation } from 'expo-router';
+import { openURL } from '../../helpers/linking';
+import TextHighlight from '../../components/text-highlight';
+import CardImage from '../../components/card-image';
+import Text from '../../components/text';
+import ArticlePlaceholder from '../../components/article-placeholder';
 
 export default function Article() {
   const { top, bottom } = useSafeAreaInsets();
+  const { canGoBack, goBack } = useNavigation();
+  const params = useGlobalSearchParams();
+
+  const onGoBack = () => {
+    if (canGoBack()) {
+      goBack()
+    }
+  }
+
+  const onOpenUrl = async () => {
+    if (typeof params?.link === "string") {
+      await openURL(params?.link)
+    }
+  }
 
   return (
-    <Box className={`flex-1 gap-4 bg-[#bfecff] pt-4 pt-[${top}px] pb-[${bottom}px]`}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-      >
-        <Container className='border-b border-slate-400'>
+    <Box className={`flex-1 bg-[#bfecff] pt-4 pt-[${top}px] pb-[${bottom}px]`}    >
+      <Container className='border-b border-slate-400'>
         <Box className='flex-row justify-between gap-3 py-4'>
-          <Button>
+          <Button onPress={onGoBack}>
             <Ionicons
               size={25}
               color={"#111111"}
@@ -39,7 +54,7 @@ export default function Article() {
                 name='bookmark-outline'
               />
             </Button>
-            <Button>
+            <Button onPress={onOpenUrl}>
               <Ionicons
                 size={25}
                 color={"#111111"}
@@ -48,6 +63,32 @@ export default function Article() {
             </Button>
           </Box>
         </Box>
+      </Container>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
+        <Container childrenClassName='gap-4 py-4'>
+          <Box className='flex-row'>
+            <TextHighlight highlightColor='#77f5c3'>
+              {params.subtitle}
+            </TextHighlight>
+          </Box>
+          <Text className={`text-3xl font-bold text-slate-900`}>
+            —{params.title}
+          </Text>
+          <CardImage
+            className={"h-56"}
+            contentFit='cover'
+            source={params.image}
+            containerClassName='mb-2'
+          />
+          <Box className='flex-row'>
+            <TextHighlight>
+              Key points
+            </TextHighlight>
+          </Box>
+          <ArticlePlaceholder />
         </Container>
       </ScrollView>
     </Box>

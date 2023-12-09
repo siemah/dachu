@@ -10,3 +10,5 @@ export default function Box({ className = '', style, children, ...props }: WithC
     </View>
   )
 }
+
+export const DBox = Box;
