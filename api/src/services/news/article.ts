@@ -23,9 +23,10 @@ export async function getArticleContent({
   } else if (/houston chronicle/i.test(provider) === true) {
     // from houston chronicle
     article = await getArticleFromChronicle(link, request);
+  } else if (provider.toLowerCase().includes("onefootbal")) {
+    article = await getArticleFromOnefootball(link, request);
   }
-  // todo: from chronicle
-  // todo: from onfootball
+
   return article;
 }
 
@@ -95,6 +96,44 @@ async function getArticleFromChronicle(url: string, req: Request) {
       name: authorName,
       link: authorLink,
       jobTitle: authorJobTitle
+    }
+  };
+}
+
+/**
+ * Get article body beside author details from onefootbal
+ * 
+ * @param url webpage link
+ * @param req user request
+ * @returns article content with extra details about author
+ */
+async function getArticleFromOnefootball(url: string, req: Request) {
+  const pageScraper = await initScraper(req, url);
+  // body + author + date
+  const pageHtml = pageScraper.querySelector("#__NEXT_DATA__[type='application/json']");
+  const articleDataAsString = await pageHtml.getText({ spaced: "" });
+  const [articleString = "{}"] = articleDataAsString[pageScraper.selector]
+  const articleData = JSON.parse(articleString);
+  const articleBody = articleData?.props?.pageProps?.containers?.[2]?.type?.grid?.items?.[0]?.components || [];
+  const date = articleData?.props?.pageProps?.metadata?.streamCreatedAt * 1000;
+  let content = ``;
+  articleBody?.forEach(({ contentType }) => {
+    if (contentType?.articleParagraph) {
+      content += contentType?.articleParagraph?.content || '';
+      content += `\n`;
+    } else {
+      content += `\n`;
+    }
+  });
+
+  return {
+    content: content,
+    description: null,
+    date,
+    author: {
+      name: "N/A",
+      link: null,
+      jobTitle: null
     }
   };
 }
