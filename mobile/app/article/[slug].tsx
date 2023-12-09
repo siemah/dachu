@@ -10,13 +10,17 @@ import TextHighlight from '../../components/text-highlight';
 import CardImage from '../../components/card-image';
 import Text from '../../components/text';
 import ArticlePlaceholder from '../../components/article-placeholder';
-import { useEffect } from 'react';
-import globalLinks from '../../config/links';
+import { useArticle } from '../../hook/use-article';
+import ArticleBody from '../../components/article-body';
 
 export default function Article() {
   const { top, bottom } = useSafeAreaInsets();
   const { canGoBack, goBack, navigate } = useNavigation();
   const params = useGlobalSearchParams();
+  const [{ loading, data: article }] = useArticle({
+    link: `${params.link}`,
+    provider: `${params.provider}`
+  });
 
   const onGoBack = () => {
     if (canGoBack()) {
@@ -32,18 +36,6 @@ export default function Article() {
       await openURL(params?.link)
     }
   }
-
-  useEffect(() => {
-    async function load() {
-      const link = encodeURIComponent(`${params.link}`);
-      fetch(`${globalLinks.article}/${params.provider}/${link}`);
-    }
-    load();
-  
-    return () => {
-    }
-  }, []);
-  
 
   return (
     <Box className={`flex-1 bg-[#bfecff] pt-4 pt-[${top}px] pb-[${bottom}px]`}    >
@@ -105,9 +97,10 @@ export default function Article() {
               Key points
             </TextHighlight>
           </Box>
-          <ArticlePlaceholder />
         </Container>
+        <ArticlePlaceholder show={loading} />
+        <ArticleBody article={article} />
       </ScrollView>
     </Box>
-  )
+  );
 }
