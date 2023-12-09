@@ -3,13 +3,16 @@ import tailwind from 'twrnc'
 import { WithClassName } from '../types/ui'
 import { TouchableOpacity } from 'react-native';
 
-export default function Button({ className = '', style, children, ...props }: WithClassName<typeof TouchableOpacity>) {
+const Button = React.forwardRef<typeof Button, WithClassName<typeof TouchableOpacity>>(({ className = '', style, children, ...props }, ref) => {
   return (
     <TouchableOpacity
       style={[tailwind.style(className), style]}
+      ref={ref}
       {...props}
     >
       {children}
     </TouchableOpacity>
   )
-}
+});
+
+export default Button;

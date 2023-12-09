@@ -5,6 +5,7 @@ export type Article = {
   category?: string;
   preview?: string;
   date?: string;
+  link?: string;
   provider?: {
     name?: string;
     image?: string;
