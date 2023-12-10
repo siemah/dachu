@@ -8,6 +8,7 @@ export type Article = {
   link?: string;
   provider?: {
     name?: string;
+    origin?: string;
     image?: string;
     link?: string;
   }

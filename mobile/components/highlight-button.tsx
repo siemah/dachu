@@ -10,7 +10,7 @@ export default function HighlightButton({ children, containerClassName = '', cla
       className={`p-2 bg-slate-900 ${containerClassName}`}
       {...props}
     >
-      <Box className={`absolute border-[1px] border-slate-900 left-1 top-1 h-full w-full ${borderContainerClassName}`} />
+      <Box className={`absolute border-[1px] border-slate-900 left-1 top-1 right-[-1] bottom-[-1] ${borderContainerClassName}`} />
       <Box className={`${className}`}>
         {children}
       </Box>

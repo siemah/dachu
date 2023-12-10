@@ -5,7 +5,7 @@ import tailwind from 'twrnc';
 import { Platform } from 'react-native';
 import LoadingIndicator from './loading-indicator';
 
-function ArticlePlaceholder({ colors = ["#cfecff", "#8fccff"], show = true }) {
+function ArticlePlaceholder({ colors = ["#dfedff", "#7fbcff",], show = true }) {
   if (show === false) return null;
 
   return Platform.OS === "web"

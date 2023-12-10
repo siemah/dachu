@@ -21,6 +21,11 @@ export default function Article() {
     link: `${params.link}`,
     provider: `${params.provider}`
   });
+  const provider = {
+    name: params?.originProvider || params?.provider || "N/A",
+    image: params?.providerImage,
+    link: params?.providerLink || params?.link,
+  };
 
   const onGoBack = () => {
     if (canGoBack()) {
@@ -98,8 +103,14 @@ export default function Article() {
             </TextHighlight>
           </Box>
         </Container>
-        <ArticlePlaceholder show={loading} />
-        <ArticleBody article={article} />
+        <Container>
+          <ArticlePlaceholder show={loading} />
+        </Container>
+        <ArticleBody
+          article={article}
+          provider={provider}
+          author={article?.author}
+        />
       </ScrollView>
     </Box>
   );

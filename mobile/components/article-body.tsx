@@ -6,8 +6,13 @@ import dayjs from 'dayjs';
 import HighlightButton from './highlight-button';
 import { Ionicons } from '@expo/vector-icons';
 import Text from './text';
+import { openURL } from '../helpers/linking';
 
-export default function ArticleBody({ article }) {
+export default function ArticleBody({ article, provider, author }) {
+  const onOpenURL = async () => {
+    await openURL(author?.link || provider?.link);
+  }
+
   if (article === null) return null;
   return (
     <Box className='gap-4'>
@@ -20,20 +25,23 @@ export default function ArticleBody({ article }) {
         <Container>
           <Box className='flex-row gap-2 items-center'>
             <CardImage
-              source={"https://picsum.photos/1000"}
-              className='rounded-full w-12 h-12'
+              source={provider?.image}
+              className='rounded-full w-12 h-12 bg-white'
               borderContainerClassName='border-0'
+              containerClassName='flex-col web:flex-row'
             />
             <Box className='gap-1 flex-1 justify-center'>
-              <Text className='font-bold'>
-                {article?.author?.name}
+              <Text className='text-slate-900 font-bold'>
+                {article?.author?.name || provider?.name || "N/A"}
               </Text>
-              <Text className='muted'>
+              <Text className='text-slate-500'>
                 {dayjs(article.date).fromNow()}
               </Text>
             </Box>
+            <Box>
             <HighlightButton
               className='flex-row gap-2 items-center'
+              onPress={onOpenURL}
             >
               <Ionicons
                 size={16}
@@ -42,6 +50,7 @@ export default function ArticleBody({ article }) {
               />
               <Text className='text-white'>Follow</Text>
             </HighlightButton>
+            </Box>
           </Box>
         </Container>
       </Box>

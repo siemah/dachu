@@ -20,7 +20,7 @@ import TabScreenPlaceholder from './placeholder';
 
 dayjs.extend(relativeTime);
 
-export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | "liverpool" }) {
+export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | "lfc" }) {
   const query = useQuery({
     queryKey: "home",
     queryFn: getHomeData,
@@ -35,6 +35,9 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
         title: article.title,
         link: article.link,
         provider: article?.provider?.name,
+        providerImage: article?.provider?.image,
+        providerLink: article?.provider?.link,
+        originProvider: article?.provider?.origin,
         subtitle: screen,
       }
     };
@@ -45,7 +48,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
           <Card
             title={`—${article.title}`}
             image={article.image}
-            subtitle={article?.provider?.name}
+            subtitle={article?.provider?.origin || article?.provider?.name}
             preview={article?.preview || article.title}
             href={href}
           >
@@ -54,13 +57,13 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
                 <CardImage
                   source={article?.provider?.image}
                   contentFit='cover'
-                  className={`h-14 w-14`}
+                  className={`h-14 w-14 bg-white`}
                   containerClassName={`w-14`}
                   borderContainerClassName={`border-2 left-2 top-2`}
                 />
                 <Box className='gap-1'>
                   <Text className='font-bold text-sm text-slate-600'>
-                    {article?.provider?.name}
+                    {article?.provider?.origin || article?.provider?.name}
                   </Text>
                   <Box className='flex-row gap-1 items-center'>
                     <Ionicons
@@ -97,7 +100,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
             <HorizontalCard
               title={article.title}
               image={article.image}
-              subtitle={article?.provider?.name}
+              subtitle={article?.provider?.origin || article?.provider?.name}
               href={href}
             />
           </Container>

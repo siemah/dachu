@@ -26,7 +26,10 @@ export default function Card({ title, subtitle, image, preview, href, className 
               {subtitle}
             </TextHighlight>
           </Box>
-          <Text className={`text-3xl font-bold text-slate-900`}>
+          <Text 
+          className={`text-3xl font-bold text-slate-900`}
+          numberOfLines={2}
+          >
             {title}
           </Text>
           <CardImage

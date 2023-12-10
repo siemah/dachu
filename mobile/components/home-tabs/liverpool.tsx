@@ -2,6 +2,6 @@ import TabScreen from './tab-screen'
 
 export default function LiverpoolHomeTab() {
   return (
-    <TabScreen screen='liverpool' />
+    <TabScreen screen='lfc' />
   );
 }

@@ -21,15 +21,15 @@ export default function TabScreenPlaceholder() {
             radius={"square"}
           />
           <Skeleton
-            width={style.width as number}
-            height={style.height as number}
+            width={tailwind`w-full`.width as number}
+            height={tailwind`h-16`.height as number}
             colorMode={"light"}
             colors={["#88b", "#ccf"]}
             radius={"square"}
           />
           <Skeleton
-            width={tailwind`w-full`.width as number}
-            height={tailwind`h-12`.height as number}
+            width={style.width as number}
+            height={style.height as number}
             colorMode={"light"}
             colors={["#88b", "#ccf"]}
             radius={"square"}
