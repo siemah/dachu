@@ -1,10 +1,10 @@
 const isProductionEnv = process.env.NODE_ENV === "production";
 const domain = isProductionEnv
-  ? "http://localhost:8787"
-  : "http://192.168.1.33:8787";
+  ? "https://dachu-app-api.zzenz.workers.dev"
+  : "http://localhost:8787"; // you can change this to your LAN IP address
 const globalLinks = {
   home: `${domain}/home`,
-  article:`${domain}/article`,
+  article: `${domain}/article`,
 };
 
 export default globalLinks;

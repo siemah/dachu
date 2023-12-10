@@ -15,14 +15,24 @@
     "adaptiveIcon": {
       "foregroundImage": "./assets/images/adaptive-icon.png",
       "backgroundColor": "#ffffff"
-    }
+    },
+    "package": "com.zzenz.dachu.android"
   },
   "web": {
     "bundler": "metro",
+    "output": "single",
     "favicon": "./assets/images/icon.png",
-    
+    "splash": {
+      "backgroundColor": "#ffffff",
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain"
+    }
   },
   "extra": {
-    "supportsRTL": true
-  }
+    "supportsRTL": true,
+    "eas": {
+      "projectId": "01591766-f547-4979-858d-0670f1988c43"
+    }
+  },
+  "owner": "zzenz"
 }

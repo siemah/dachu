@@ -4,6 +4,7 @@ worker
 package-lock.json
 yarn.lock
 .cargo-ok
+.DS_Store
 
 # Output of 'npm pack'
 *.tgz

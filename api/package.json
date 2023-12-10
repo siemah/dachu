@@ -6,6 +6,8 @@
   "scripts": {
     "test": "jest --verbose",
     "dev": "wrangler dev src/index.ts",
+    "whoami": "wrangler whoami",
+    "login": "wrangler login",
     "deploy": "wrangler publish src/index.ts"
   },
   "license": "MIT",
