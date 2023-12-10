@@ -17,6 +17,7 @@ import { Article } from '../../types/data';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import TabScreenPlaceholder from './placeholder';
+import { RefreshControl } from 'react-native-gesture-handler';
 
 dayjs.extend(relativeTime);
 
@@ -130,6 +131,13 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
       contentContainerStyle={tailwind`gap-6 pb-8`}
       refreshing={query.isRefetching}
       onRefresh={onRefresh}
+      refreshControl={
+        <RefreshControl
+          refreshing={query.isRefetching}
+          onRefresh={onRefresh}
+          colors={["#8080b0", "#7fbcff"]}
+        />
+      }
     />
   );
 }
