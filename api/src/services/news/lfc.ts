@@ -30,12 +30,13 @@ export default async function getLfcNews(req: Context["req"]) {
       link: `https://onefootball.com${article?.link}`,
       image: article?.imageObject?.path,
       provider: {
-        name: article?.publisherName,
+        origin: article?.publisherName,
+        name: "Onefootball",
         image: article?.publisherImageObject?.path,
         link: null
       }
     })
   })
 
-  return articles||[];
+  return articles || [];
 }

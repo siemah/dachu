@@ -13,7 +13,8 @@ class Scraper {
   }
 
   async fetch(url, options?: RequestInit<RequestInitCfProperties>) {
-    this.url = url
+    url = decodeURIComponent(url);
+    this.url = url;
     this.response = await fetch(url, {
       cf: {
         cacheTtl: 60000

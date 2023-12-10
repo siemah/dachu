@@ -51,7 +51,7 @@ async function getArticleFromWire(url: string, req: Context["req"]) {
   const authorResponse = await authorBody.getText({ spaced: "" });
   const [articleExtraData = "{}"] = authorResponse?.[authorBody?.selector];
   const extraData = JSON.parse(articleExtraData);
-  const authorName = extraData?.author?.name || "N/A";
+  const authorName = extraData?.author?.name;
   const date = extraData?.datePublished || null;
   // author link
   const authorLinkBody = authorLinkScraper.querySelector("[itemprop=author] a");
@@ -84,7 +84,7 @@ async function getArticleFromChronicle(url: string, req: Context['req']) {
   const extraData = JSON.parse(articleExtraData);
   const content = extraData?.articleBody || "N/A";
   const description = extraData?.description || null;
-  const authorName = extraData?.author?.[0]?.name || "N/A";
+  const authorName = extraData?.author?.[0]?.name;
   const authorLink = extraData?.author?.[0]?.url || null;
   const authorJobTitle = extraData?.author?.[0]?.jobTitle || null;
   const date = extraData?.datePublished || null;
@@ -132,7 +132,7 @@ async function getArticleFromOnefootball(url: string, req: Context["req"]) {
     description: null,
     date,
     author: {
-      name: "N/A",
+      name: null,
       link: null,
       jobTitle: null
     }

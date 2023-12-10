@@ -34,10 +34,9 @@ app
     const article = await getArticleContent({
       provider,
       link,
-      // @ts-ignore
       request: ctx.req
     });
-    
+
     return ctx.json(article);
   })
 
