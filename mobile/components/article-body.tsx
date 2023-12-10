@@ -7,6 +7,9 @@ import HighlightButton from './highlight-button';
 import { Ionicons } from '@expo/vector-icons';
 import Text from './text';
 import { openURL } from '../helpers/linking';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 export default function ArticleBody({ article, provider, author }) {
   const onOpenURL = async () => {
