@@ -12,7 +12,7 @@ export default async function getCelticsNews() {
       url: "https://celticswire.usatoday.com/wp-json/wp/v2/posts"
     }),
   ]);
-  const [wireArticles] = handleAllSettledResults<any[]>(wireResponse);
+  const [wireArticles = []] = handleAllSettledResults<any[]>(wireResponse);
   const articles = wireArticles?.map(article => ({
     id: article.id,
     date: article.date_gmt,

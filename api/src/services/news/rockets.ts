@@ -57,7 +57,7 @@ export default async function getRocketsNews(req: Context["req"]) {
     }),
     getHoustonChron(req)
   ]);
-  const [wireArticles, hcArticles] = handleAllSettledResults<any[]>(wireResponse);
+  const [wireArticles = [], hcArticles = []] = handleAllSettledResults<any[]>(wireResponse);
   const rwArticles = wireArticles.map(article => ({
     id: article.id,
     date: article.date_gmt,
