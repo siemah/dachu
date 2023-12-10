@@ -1,35 +1,17 @@
-import { useEffect, useState } from "react";
-import httpRequest from "../helpers/http";
 import globalLinks from "../config/links";
-import useAbortController from "./use-abort-controller";
+import { useQuery } from "react-query";
+import { getArticle } from "../services/article";
 
 export function useArticle({ link, provider }: { link: string, provider: string }) {
-  const {newAbortSignal, cancelPreviousRequest} = useAbortController();
-  const [article, setArticle] = useState({
-    loading: true,
-    data: null
+  const articleLink = encodeURIComponent(`${link}`);
+  const query = useQuery({
+    queryKey: `${globalLinks.article}/${provider}/${articleLink}`,
+    queryFn: getArticle(`${globalLinks.article}/${provider}/${articleLink}`)
   });
-
-  useEffect(() => {
-    async function load() {
-      const articleLink = encodeURIComponent(`${link}`);
-      const article = await httpRequest({
-        url: `${globalLinks.article}/${provider}/${articleLink}`,
-        requestConfig: {
-          signal: newAbortSignal()
-        }
-      });
-      setArticle({
-        data: article,
-        loading: false
-      });
+  return [
+    {
+      loading: query.isFetching,
+      data: query.data
     }
-    load();
-
-    return () => {
-      cancelPreviousRequest();
-    }
-  }, []);
-
-  return [article] as const;
+  ] as const;
 }

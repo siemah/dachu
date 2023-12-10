@@ -13,7 +13,7 @@ export default function ArticleBody({ article, provider, author }) {
     await openURL(author?.link || provider?.link);
   }
 
-  if (article === null) return null;
+  if (article === null || article === undefined) return null;
   return (
     <Box className='gap-4'>
       <Container>
@@ -39,17 +39,17 @@ export default function ArticleBody({ article, provider, author }) {
               </Text>
             </Box>
             <Box>
-            <HighlightButton
-              className='flex-row gap-2 items-center'
-              onPress={onOpenURL}
-            >
-              <Ionicons
-                size={16}
-                color={"#ffffff"}
-                name='person-add-sharp'
-              />
-              <Text className='text-white'>Follow</Text>
-            </HighlightButton>
+              <HighlightButton
+                className='flex-row gap-2 items-center'
+                onPress={onOpenURL}
+              >
+                <Ionicons
+                  size={16}
+                  color={"#ffffff"}
+                  name='person-add-sharp'
+                />
+                <Text className='text-white'>Follow</Text>
+              </HighlightButton>
             </Box>
           </Box>
         </Container>

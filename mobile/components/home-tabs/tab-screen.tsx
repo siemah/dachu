@@ -24,7 +24,6 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
   const query = useQuery({
     queryKey: "home",
     queryFn: getHomeData,
-
   });
   const articles = query?.data?.articles?.[screen] || [];
   const renderItem = ({ item: article, index }: FlatListRender<Article>) => {
@@ -108,7 +107,13 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
     );
   }
 
-  if (query.isFetching === true) {
+  const onRefresh = () => {
+    query.refetch({
+      queryKey: "home",
+    });
+  }
+
+  if (query.isFetching === true && query.isRefetching === false) {
     return Platform.OS === "web"
       ? <LoadingIndicator color={"#282055"} />
       : (
@@ -123,6 +128,8 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
       data={articles}
       renderItem={renderItem}
       contentContainerStyle={tailwind`gap-6 pb-8`}
+      refreshing={query.isRefetching}
+      onRefresh={onRefresh}
     />
   );
 }
