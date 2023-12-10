@@ -1,13 +1,14 @@
 import httpRequest from "../../utils/http";
 import { initScraper, stringToUniqueNumber } from "../../utils/helpers";
 import { handleAllSettledResults } from "../../utils/promises";
+import { Context } from "hono";
 
 /**
  * Get articles details from the houstonchronicle
  * @param req Received request instance
  * @returns list of articles
  */
-async function getHoustonChron(req: Request) {
+async function getHoustonChron(req: Context["req"]) {
   const url = "https://www.houstonchronicle.com/texas-sports-nation/rockets/";
   const scraper = await initScraper(req, url);
   const scraperPreview = await initScraper(req, url);
@@ -33,13 +34,13 @@ async function getHoustonChron(req: Request) {
     link: `https://www.houstonchronicle.com${links[index]}`,
     title: headers[index],
     image: images[index],
+    preview: index === 0 ? preview : null,
     provider: {
       name: "Houston Chronicle",
       image: "https://pbs.twimg.com/profile_images/1578166120502140929/4wIP6Afi_400x400.jpg",
       link: "https://houstonchronicle.com"
     }
   }));
-  articles[0].preview = preview;
 
   return articles;
 }
@@ -49,7 +50,7 @@ async function getHoustonChron(req: Request) {
  * 
  * @returns list of articles from any sources
  */
-export default async function getRocketsNews(req: Request) {
+export default async function getRocketsNews(req: Context["req"]) {
   const wireResponse = await Promise.allSettled([
     httpRequest({
       url: "https://rocketswire.usatoday.com/wp-json/wp/v2/posts"

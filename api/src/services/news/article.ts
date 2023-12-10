@@ -1,3 +1,4 @@
+import { Context } from "hono";
 import { initScraper } from "../../utils/helpers";
 import httpRequest from "../../utils/http";
 
@@ -14,7 +15,7 @@ export async function getArticleContent({
 }: {
   provider: string,
   link: string;
-  request: Request;
+  request: Context["req"];
 }) {
   let article = {};
   // from wire sources such as rockets/celtics wire
@@ -37,7 +38,7 @@ export async function getArticleContent({
  * @param req user request
  * @returns article content with extra details about author
  */
-async function getArticleFromWire(url: string, req: Request) {
+async function getArticleFromWire(url: string, req: Context["req"]) {
   const bodyScraper = await initScraper(req, url);
   const extraDataScraper = await initScraper(req, url);
   const authorLinkScraper = await initScraper(req, url);
@@ -74,7 +75,7 @@ async function getArticleFromWire(url: string, req: Request) {
  * @param req user request
  * @returns article content with extra details about author
  */
-async function getArticleFromChronicle(url: string, req: Request) {
+async function getArticleFromChronicle(url: string, req: Context['req']) {
   const extraDataScraper = await initScraper(req, url);
   // body + author + date
   const authorBody = extraDataScraper.querySelector("[type='application/ld+json']");
@@ -107,7 +108,7 @@ async function getArticleFromChronicle(url: string, req: Request) {
  * @param req user request
  * @returns article content with extra details about author
  */
-async function getArticleFromOnefootball(url: string, req: Request) {
+async function getArticleFromOnefootball(url: string, req: Context["req"]) {
   const pageScraper = await initScraper(req, url);
   // body + author + date
   const pageHtml = pageScraper.querySelector("#__NEXT_DATA__[type='application/json']");

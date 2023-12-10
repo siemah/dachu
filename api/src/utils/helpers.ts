@@ -1,3 +1,4 @@
+import { Context } from "hono";
 import Scraper from "./scraper";
 
 /**
@@ -6,7 +7,7 @@ import Scraper from "./scraper";
  * @param req Received request
  * @returns an instance from the scraper
  */
-export async function initScraper(req: Request, url: string, options?:RequestInit<RequestInitCfProperties>) {
+export async function initScraper(req: Context["req"], url: string, options?:RequestInit<RequestInitCfProperties>) {
   const scraper = await (new Scraper()).fetch(
     url,
     {

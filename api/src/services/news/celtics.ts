@@ -13,7 +13,7 @@ export default async function getCelticsNews() {
     }),
   ]);
   const [wireArticles] = handleAllSettledResults<any[]>(wireResponse);
-  const articles = wireArticles.map(article => ({
+  const articles = wireArticles?.map(article => ({
     id: article.id,
     date: article.date_gmt,
     link: article.link,
@@ -26,5 +26,5 @@ export default async function getCelticsNews() {
     }
   }))
 
-  return articles;
+  return articles||[];
 }
