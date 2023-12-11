@@ -18,6 +18,10 @@
     },
     "package": "com.zzenz.dachu.android"
   },
+  "androidNavigationBar": {
+    "backgroundColor": "#ffffff",
+    "barStyle": "dark-content"
+  },
   "web": {
     "bundler": "metro",
     "output": "single",
@@ -34,5 +38,13 @@
       "projectId": "01591766-f547-4979-858d-0670f1988c43"
     }
   },
-  "owner": "zzenz"
+  "owner": "zzenz",
+  "plugins": [
+    [
+      "expo-location",
+      {
+        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+      }
+    ]
+  ]
 }

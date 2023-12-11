@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import Box from './box';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,9 +8,12 @@ import Animated, { FadeInDown, FadeOutDown, FadeIn } from 'react-native-reanimat
 import { getIcon } from '../helpers/ui';
 
 export function TabBar({ state, descriptors, insets, navigation }: BottomTabBarProps) {
+  const { history } = state;
+  const lastRouteKey = history?.[history.length - 1]?.key;
+  const backgroundColor = descriptors[lastRouteKey].options.tabBarActiveBackgroundColor || "#c8c0ff";
   const containerStyle = {
     paddingBottom: insets.bottom,
-    backgroundColor: "#c8c0ff"
+    backgroundColor
   };
 
   return (

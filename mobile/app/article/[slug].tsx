@@ -43,7 +43,7 @@ export default function Article() {
   }
 
   return (
-    <Box className={`flex-1 bg-[#bfecff] pt-4 pt-[${top}px] pb-[${bottom}px]`}    >
+    <Box className={`flex-1 bg-[#bfecff] pt-4 pt-[${top}px] pb-[${bottom}px]`}>
       <Container className='border-b border-slate-400'>
         <Box className='flex-row justify-between gap-3 py-4'>
           <Button onPress={onGoBack}>

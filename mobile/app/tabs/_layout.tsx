@@ -1,19 +1,14 @@
 import React from 'react'
-import { Tabs } from 'expo-router'
+import { Tabs, usePathname } from 'expo-router'
 import { TabBar } from '../../components/tab-bar';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { getScreenColor } from '../../helpers/ui';
 
-// const queryClient = new QueryClient({
-//   defaultOptions: {
-//     queries: {
-//       cacheTime: 3600000, // 1 hour
-//       staleTime: 900000 // 15 minutes
-//     }
-//   }
-// });
 export default function _layout() {
+  const pathname = usePathname();
+  const screenColor = getScreenColor(pathname);
   const screenOptions = {
-    headerShown: false
+    headerShown: false,
+    tabBarActiveBackgroundColor: screenColor
   };
   const sceneContainerStyle = {
     backgroundColor: "#c8c0ff"
@@ -21,14 +16,11 @@ export default function _layout() {
 
   return (
     // <QueryClientProvider client={queryClient}>
-      <Tabs
-        tabBar={TabBar}
-        screenOptions={screenOptions}
-        sceneContainerStyle={sceneContainerStyle}
-      >
-        <Tabs.Screen name='index' />
-        <Tabs.Screen name='settings' />
-      </Tabs>
+    <Tabs
+      tabBar={TabBar}
+      screenOptions={screenOptions}
+      sceneContainerStyle={sceneContainerStyle}
+    />
     // </QueryClientProvider>
   )
 }

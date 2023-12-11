@@ -3,7 +3,7 @@ import { WithClassName } from '../types/ui';
 import Box from './box';
 import Text from './text';
 
-export default function TextHighlight({ style, containerClassName = '', highlightColor = "rgba(255,218,121,1)", children }: { highlightColor?: string;containerClassName?: string } & WithClassName<typeof RnText>) {
+export default function TextHighlight({ style, className = "", containerClassName = '', highlightColor = "rgba(255,218,121,1)", children }: { highlightColor?: string; containerClassName?: string } & WithClassName<typeof RnText>) {
   const highlight = {
     backgroundColor: highlightColor
   };
@@ -16,7 +16,7 @@ export default function TextHighlight({ style, containerClassName = '', highligh
       />
       <Text
         style={[styles.text, style]}
-        className="uppercase font-bold text-black"
+        className={`uppercase font-bold text-black ${className}`}
       >
         {children}
       </Text>
