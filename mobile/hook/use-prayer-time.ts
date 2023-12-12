@@ -40,17 +40,20 @@ export function usePrayerTimes(config?: UsePrayerTimes) {
   const data = typeof query.data === "object"
     ? Object
       .entries(query.data.results)
-      .map(([name, time]) => ({ name, time }))
+      .map(([name, time]) => ({
+        name: name.toLocaleLowerCase(),
+        time
+      }))
     : [];
 
   useEffect(() => {
-    if(config?.latitude !== undefined && config?.longitude !== undefined) {
+    if (config?.latitude !== undefined && config?.longitude !== undefined) {
       query.refetch();
     }
   }, [config])
 
   return [{
-      loading: query.isFetching,
-      data
-    }] as const;
+    loading: query.isFetching,
+    data
+  }] as const;
 }

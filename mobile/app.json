@@ -45,6 +45,12 @@
       {
         "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
       }
+    ],
+    [
+      "expo-notifications",
+      {
+        "sounds": ["assets/audio/adhan.wav"]
+      }
     ]
   ]
 }
