@@ -49,8 +49,11 @@
     [
       "expo-notifications",
       {
-        "sounds": ["assets/audio/adhan.wav"]
+        "sounds": [
+          "assets/audio/adhan.wav"
+        ]
       }
-    ]
+    ],
+    "expo-localization"
   ]
 }
