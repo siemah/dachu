@@ -19,6 +19,7 @@ import tailwind from 'twrnc';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -284,7 +285,7 @@ async function registerForPushNotificationsAsync() {
     // Learn more about projectId:
     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
     token = (await Notifications.getExpoPushTokenAsync({
-      // projectId: 'your-project-id' 
+      projectId: Constants.expoConfig?.extra?.eas?.projectId
     })).data;
   } else if (Platform.OS !== "web") {
     alert('Must use physical device for Push Notifications');
