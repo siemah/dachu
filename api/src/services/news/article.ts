@@ -118,12 +118,17 @@ async function getArticleFromOnefootball(url: string, req: Context["req"]) {
   const articleBody = articleData?.props?.pageProps?.containers?.[2]?.type?.grid?.items?.[0]?.components || [];
   const date = articleData?.props?.pageProps?.metadata?.streamCreatedAt * 1000;
   let content = ``;
-  articleBody?.forEach(({ contentType }) => {
+  articleBody?.forEach(({ contentType }, index) => {
     if (contentType?.articleParagraph) {
       content += contentType?.articleParagraph?.content || '';
       content += `\n`;
-    } else {
-      content += `\n`;
+    } else if (contentType?.image && index > 0) {
+      content += `<img 
+        src="${contentType?.image?.path}"
+        alt="${contentType?.image?.alt}"
+        height="${contentType?.image?.size?.height}"
+        width="${contentType?.image?.size?.width}"
+      />`;
     }
   });
 
@@ -131,6 +136,7 @@ async function getArticleFromOnefootball(url: string, req: Context["req"]) {
     content: content,
     description: null,
     date,
+    isHtml: true,
     author: {
       name: null,
       link: null,

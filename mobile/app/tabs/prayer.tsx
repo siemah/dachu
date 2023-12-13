@@ -119,7 +119,7 @@ export default function Prayer() {
         const notificationId = await schedulePushNotification(
           `Prayer time`,
           `It is nearly time for ${item.name}`,
-          10,//diff / 1000
+          (diff / 1000),
           posthog
         );
         const prayerConfig = {

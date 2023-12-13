@@ -8,20 +8,30 @@ import { Ionicons } from '@expo/vector-icons';
 import Text from './text';
 import { openURL } from '../helpers/linking';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { decodeHTMLEntity } from '../helpers/data';
+import RenderHTML from 'react-native-render-html';
+import tailwind from 'twrnc';
 
 dayjs.extend(relativeTime);
-
 export default function ArticleBody({ article, provider, author }) {
   const onOpenURL = async () => {
     await openURL(author?.link || provider?.link);
   }
-
   if (article === null || article === undefined) return null;
+  const articleBody = `${decodeHTMLEntity(article?.content || "")?.split(`\n`)?.join(`\n\n`)}`;
+  const renderHtmlSource = {
+    html: articleBody,
+  };
+  const tagsStyles = {
+    body: tailwind`text-slate-900 leading-5`,
+    a: tailwind`text-[#2075f3]`
+  };
+
   return (
     <Box className='gap-4'>
       <Container>
         <Text className='text-black'>
-          {article?.description}
+          {decodeHTMLEntity(article?.description || "")}
         </Text>
       </Container>
       <Box className='border-t border-b border-slate-600 py-2'>
@@ -58,9 +68,20 @@ export default function ArticleBody({ article, provider, author }) {
         </Container>
       </Box>
       <Container className='pb-4'>
-        <Text className='text-slate-900 leading-5'>
-          {`${article?.content?.split(`\n`)?.join(`\n\n`)}`}
-        </Text>
+        {
+          article?.isHtml === true
+            ? (
+              <RenderHTML
+                source={renderHtmlSource}
+                tagsStyles={tagsStyles}
+              />
+            )
+            : (
+              <Text className='text-slate-900 leading-5'>
+                {articleBody}
+              </Text>
+            )
+        }
       </Container>
     </Box>
   );
