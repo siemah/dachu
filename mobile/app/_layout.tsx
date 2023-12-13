@@ -1,10 +1,18 @@
-import { Stack, usePathname } from 'expo-router';
+import { Stack } from 'expo-router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import * as NavigationBar from 'expo-navigation-bar';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import useScreenColor from '../hook/use-screen-color';
-import { PostHogProvider } from 'posthog-react-native'
+import * as Sentry from 'sentry-expo';
+import ReportingProvider from '../components/reporting-wrapper';
+import tailwind, { useDeviceContext } from 'twrnc';
+
+Sentry.init({
+  dsn: 'https://1dcf606887ca6e4f9a4da99b325f5979@o1322078.ingest.sentry.io/4506382631108608',
+  enableInExpoDevelopment: false,
+  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,11 +23,8 @@ const queryClient = new QueryClient({
   }
 });
 
-const postHogOptions = {
-  host: "https://eu.posthog.com",
-};
-
 export default function StackLayout() {
+  useDeviceContext(tailwind);
   const screenColor = useScreenColor();
   const screenOptions = {
     headerShown: false
@@ -34,12 +39,9 @@ export default function StackLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PostHogProvider
-        apiKey="phc_RsmRdAMG6RSS4uM1F500S0BBvn1TC7gMxHbsqhg4wpj"
-        options={postHogOptions}
-      >
+      <ReportingProvider>
         <Stack screenOptions={screenOptions} />
-      </PostHogProvider>
+      </ReportingProvider>
     </QueryClientProvider>
   );
 }

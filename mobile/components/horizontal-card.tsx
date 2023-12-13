@@ -14,17 +14,17 @@ export default function HorizontalCard({ className = '', children, title, href, 
       asChild
     >
       <Button
-        className={`flex-row gap-6 items-center ${className}`}
+        className={`flex-row gap-6 items-center md:flex-col ${className}`}
         {...props}
       >
         <CardImage
           source={image}
           contentFit='cover'
-          className={`h-24 w-24`}
-          containerClassName={`w-24`}
+          className={`h-full w-full`}
+          containerClassName={`w-24 h-24 md:w-full`}
           borderContainerClassName={`border-2 left-2 top-2`}
         />
-        <Box className='flex-1 gap-2'>
+        <Box className='flex-1 gap-2 md:w-full'>
           {!!subtitle && (
             <Box className='flex-row'>
               <TextHighlight highlightColor='#77f5c3'>
