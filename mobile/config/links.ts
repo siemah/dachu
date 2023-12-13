@@ -5,6 +5,7 @@ const domain = isProductionEnv
 const globalLinks = {
   home: `${domain}/home`,
   article: `${domain}/article`,
+  prayerTimes: `${domain}/prayer`,
 };
 
 export default globalLinks;

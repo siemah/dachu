@@ -9,8 +9,6 @@ import tailwind from 'twrnc';
 import { SplashScreen } from 'expo-router';
 import RocketsHomeTab from '../../components/home-tabs/rockets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-// import { useQuery } from 'react-query';
-// import { getHomeData } from '../services/home';
 import CelticsHomeTab from '../../components/home-tabs/celtics';
 import LiverpoolHomeTab from '../../components/home-tabs/liverpool';
 

@@ -8,7 +8,7 @@ import { Link } from 'expo-router'
 import tailwind from 'twrnc'
 import Button from './button'
 
-export default function Card({ title, subtitle, image, preview, href, className = '', children, ...props }: CardProps) {
+export default function Card({ title, subtitle, image, preview, href, className = '', imageClassName = '', children, ...props }: CardProps) {
   return (
     <Link
       href={href}
@@ -26,14 +26,14 @@ export default function Card({ title, subtitle, image, preview, href, className 
               {subtitle}
             </TextHighlight>
           </Box>
-          <Text 
-          className={`text-3xl font-bold text-slate-900`}
-          numberOfLines={2}
+          <Text
+            className={`text-3xl font-bold text-slate-900`}
+            numberOfLines={2}
           >
             {title}
           </Text>
           <CardImage
-            className={"h-56"}
+            className={`min-h-56 h-full ${imageClassName}`}
             contentFit='cover'
             source={image}
           />
@@ -41,7 +41,7 @@ export default function Card({ title, subtitle, image, preview, href, className 
             !!preview && (
               <Text className='mt-2'>
                 <Text className={`mt-2 text-slate-700`}>
-                  {preview}{`....`}
+                  {preview}{`..`}
                 </Text>
                 <Text className='font-bold text-slate-800 underline'>More</Text>
               </Text>

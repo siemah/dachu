@@ -21,7 +21,7 @@ export default function HorizontalCard({ className = '', children, title, href, 
           source={image}
           contentFit='cover'
           className={`h-full w-full`}
-          containerClassName={`w-24 h-24 md:w-full`}
+          containerClassName={`w-24 h-24 md:w-full md:h-60`}
           borderContainerClassName={`border-2 left-2 top-2`}
         />
         <Box className='flex-1 gap-2 md:w-full'>

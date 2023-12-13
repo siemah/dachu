@@ -92,10 +92,10 @@ export default function Article() {
             —{params.title}
           </Text>
           <CardImage
-            className={"h-56"}
+            className={"min-h-56 h-full"}
             contentFit='cover'
             source={params.image}
-            containerClassName='mb-2'
+            containerClassName='mb-2 md:h-100'
           />
           <Box className='flex-row'>
             <TextHighlight>

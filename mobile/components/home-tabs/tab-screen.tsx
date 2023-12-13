@@ -8,7 +8,7 @@ import Button from '../button';
 import Container from '../container';
 import HorizontalCard from '../horizontal-card';
 import LoadingIndicator from '../loading-indicator';
-import { FlatList, Platform } from 'react-native';
+import { FlatList, Platform, View } from 'react-native';
 import tailwind from 'twrnc';
 import { useQuery } from 'react-query';
 import { getHomeData } from '../../services/home';
@@ -27,6 +27,74 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
     queryFn: getHomeData,
   });
   const articles = query?.data?.articles?.[screen] || [];
+  const ListHeaderComponent = () => {
+    const article = articles?.[0];
+    if (article === undefined) return null;
+    const href = {
+      pathname: `/article/${article.id}`,
+      params: {
+        image: article.image,
+        title: article.title,
+        link: article.link,
+        provider: article?.provider?.name,
+        providerImage: article?.provider?.image,
+        providerLink: article?.provider?.link,
+        originProvider: article?.provider?.origin,
+        subtitle: screen,
+      }
+    };
+
+    return (
+      <Card
+        title={`—${article.title}`}
+        image={article.image}
+        subtitle={article?.provider?.origin || article?.provider?.name}
+        preview={article?.preview || article.title}
+        href={href}
+        imageClassName={`md:h-100`}
+      >
+        <Box className='flex-row items-center gap-4'>
+          <Box className='flex-1 flex-row gap-4 items-center'>
+            <CardImage
+              source={article?.provider?.image}
+              contentFit='cover'
+              className={`h-14 w-14 bg-white`}
+              containerClassName={`w-14`}
+              borderContainerClassName={`border-2 left-2 top-2`}
+            />
+            <Box className='gap-1'>
+              <Text className='font-bold text-sm text-slate-600'>
+                {article?.provider?.origin || article?.provider?.name}
+              </Text>
+              <Box className='flex-row gap-1 items-center'>
+                <Ionicons
+                  size={20}
+                  color={"#111111"}
+                  name={'time-outline'} />
+                <Text className='text-slate-600'>
+                  {dayjs(article.date).fromNow()}
+                </Text>
+              </Box>
+            </Box>
+          </Box>
+          <Box className='flex-row gap-2'>
+            <Button>
+              <Ionicons
+                name='heart-outline'
+                color={'#111111'}
+                size={30} />
+            </Button>
+            <Button>
+              <Ionicons
+                name='bookmark-outline'
+                color={'#111111'}
+                size={30} />
+            </Button>
+          </Box>
+        </Box>
+      </Card>
+    );
+  };
   const renderItem = ({ item: article, index }: FlatListRender<Article>) => {
     const href = {
       pathname: `/article/${article.id}`,
@@ -43,61 +111,17 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
     };
 
     return (
-      index === 0
+      index < 0
         ? (
-          <Card
-            title={`—${article.title}`}
-            image={article.image}
-            subtitle={article?.provider?.origin || article?.provider?.name}
-            preview={article?.preview || article.title}
-            href={href}
-          >
-            <Box className='flex-row items-center gap-4'>
-              <Box className='flex-1 flex-row gap-4 items-center'>
-                <CardImage
-                  source={article?.provider?.image}
-                  contentFit='cover'
-                  className={`h-14 w-14 bg-white`}
-                  containerClassName={`w-14`}
-                  borderContainerClassName={`border-2 left-2 top-2`}
-                />
-                <Box className='gap-1'>
-                  <Text className='font-bold text-sm text-slate-600'>
-                    {article?.provider?.origin || article?.provider?.name}
-                  </Text>
-                  <Box className='flex-row gap-1 items-center'>
-                    <Ionicons
-                      size={20}
-                      color={"#111111"}
-                      name={'time-outline'} />
-                    <Text className='text-slate-600'>
-                      {dayjs(article.date).fromNow()}
-                    </Text>
-                  </Box>
-                </Box>
-              </Box>
-              <Box className='flex-row gap-2'>
-                <Button>
-                  <Ionicons
-                    name='heart-outline'
-                    color={'#111111'}
-                    size={30}
-                  />
-                </Button>
-                <Button>
-                  <Ionicons
-                    name='bookmark-outline'
-                    color={'#111111'}
-                    size={30}
-                  />
-                </Button>
-              </Box>
-            </Box>
-          </Card>
+          null
         )
         : (
-          <Container key={`rockets-home-tab-item-${article.id}`}>
+          <Container
+            key={`rockets-home-tab-item-${article.id}`}
+            className='md:flex-1 md:max-w-[33%]'
+          >
             <HorizontalCard
+              key={`rockets-home-tab-item-${article.id}`}
               title={article.title}
               image={article.image}
               subtitle={article?.provider?.origin || article?.provider?.name}
@@ -126,11 +150,13 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
 
   return (
     <FlatList
-      data={articles}
+      data={articles?.slice(1, articles.length)}
+      ListHeaderComponent={ListHeaderComponent}
       renderItem={renderItem}
-      contentContainerStyle={tailwind`gap-6 pb-8`}
+      contentContainerStyle={tailwind`gap-6 pb-8 md:flex-1`}
       refreshing={query.isRefetching}
       onRefresh={onRefresh}
+      numColumns={tailwind.prefixMatch("md") ? 3 : 1}
       refreshControl={
         <RefreshControl
           refreshing={query.isRefetching}

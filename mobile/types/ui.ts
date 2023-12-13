@@ -17,4 +17,5 @@ export type CardProps =
   {
     subtitle?: string;
     preview?: string;
+    imageClassName?: string;
   }
