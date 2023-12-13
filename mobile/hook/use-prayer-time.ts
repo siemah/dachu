@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import httpRequest from "../helpers/http";
 import { useEffect } from "react";
+import globalLinks from "../config/links";
 
 type UsePrayerTimes = {
   latitude: number;
@@ -8,8 +9,8 @@ type UsePrayerTimes = {
 };
 
 type Result = {
-  results: Record<string, string>;
-  success: boolean
+  name: string;
+  time: string;
 }
 
 /**
@@ -21,9 +22,9 @@ type Result = {
  * @xample http://islamicfinder.us/index.php/api/prayer_times?latitude=36.410172&longitude=4.894720&timezone=Africa/Algiers&method=5&juristic=Maliki&time_format=0
  */
 function getPrayerTimes(config: UsePrayerTimes) {
-  return () => {
-    const response = httpRequest({
-      url: `http://islamicfinder.us/index.php/api/prayer_times?latitude=${config?.latitude}&longitude=${config?.longitude}&timezone=Africa/Algiers&method=5&juristic=Maliki&time_format=0`
+  return async () => {
+    const response = await httpRequest<Result[]>({
+      url: `${globalLinks.prayerTimes}?latitude=${config?.latitude}&longitude=${config?.longitude}`
     });
 
     return response;
@@ -31,26 +32,20 @@ function getPrayerTimes(config: UsePrayerTimes) {
 }
 
 export function usePrayerTimes(config?: UsePrayerTimes) {
-  const query = useQuery<any, unknown, Result>({
+  const query = useQuery<any, unknown, Result[]>({
     queryKey: `prayer-times`,
     queryFn: getPrayerTimes(config),
     enabled: false
   });
-
-  const data = typeof query.data === "object"
-    ? Object
-      .entries(query.data.results)
-      .map(([name, time]) => ({
-        name: name.toLocaleLowerCase(),
-        time
-      }))
-    : [];
+  const data = query.data ?? [];
 
   useEffect(() => {
     if (config?.latitude !== undefined && config?.longitude !== undefined) {
-      query.refetch();
+      query.refetch({
+        queryKey: `prayer-times`,
+      });
     }
-  }, [config])
+  }, [config]);
 
   return [{
     loading: query.isFetching,

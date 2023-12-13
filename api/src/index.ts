@@ -5,6 +5,7 @@ import { getGames } from './services/games';
 import { getArticleContent } from './services/news/article';
 import { getNews } from './services/news';
 import { handleAllSettledResults } from './utils/promises';
+import { getPrayerTimes } from './services/prayer';
 
 const app = new Hono()
 
@@ -38,6 +39,16 @@ app
     });
 
     return ctx.json(article);
+  })
+  .get('/prayer', async ctx => {
+    const latitude = ctx.req.query("latitude");
+    const longitude = ctx.req.query("longitude");
+    const prayerTimes = await getPrayerTimes({
+      longitude,
+      latitude
+    });
+
+    return ctx.json(prayerTimes);
   })
 
 export default app;

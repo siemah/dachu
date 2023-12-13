@@ -21,6 +21,8 @@ import * as Notifications from 'expo-notifications';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import PostHog, { usePostHog } from 'posthog-react-native';
+import SentryNative from '@sentry/react-native';
+import SentryBrowser from '@sentry/browser';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -31,6 +33,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
+const Sentry = Platform.OS === "web" ? SentryBrowser : SentryNative;
 export default function Prayer() {
   const posthog = usePostHog();
   const notificationListener = useRef<Notifications.Subscription>();
@@ -89,7 +92,8 @@ export default function Prayer() {
         const notificationId = await schedulePushNotification(
           `Prayer time`,
           `It is nearly time for ${item.name}`,
-          20//diff / 1000
+          20,//diff / 1000
+          posthog
         );
         const prayerConfig = {
           ...(prayerNotificationConfig || {}),
@@ -170,12 +174,12 @@ export default function Prayer() {
     const loadPrayerNotificationSetups = async () => {
       try {
         const response = await AsyncStorage.getItem();
-        posthog.capture("loadPrayerNotificationSetups.response", {response})
+        posthog?.capture("loadPrayerNotificationSetups.response", { response })
         setPrayerNotificationConfig(
           JSON.parse(response || "null")
         );
       } catch (error) {
-        posthog.capture("error-loadPrayerNotificationSetups", {
+        posthog?.capture("error-loadPrayerNotificationSetups", {
           error,
           message: error.message,
           toString: JSON.stringify(error)
@@ -184,26 +188,32 @@ export default function Prayer() {
     }
     loadPrayerNotificationSetups();
   }, []);
+  posthog?.capture("fetching_prayers", {
+    data: prayerTimes,
+    coords: gpsCoords
+  });
 
   useEffect(() => {
     const initLoad = async () => {
       try {
         let { status, } = await Location.requestForegroundPermissionsAsync();
-        posthog.capture("initLoad.status", {status})
+        posthog?.capture("initLoad.status", { status })
 
         if (status !== Location.PermissionStatus.GRANTED) {
           handleLocationRejection();
           return;
         }
 
+        posthog?.capture("initLoad.before-getCurrentPositionAsync")
         let location = await Location.getCurrentPositionAsync();
-        posthog.capture("initLoad.location", {location})
+        posthog?.capture("initLoad.location", { location })
         setGpsCoords({
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         });
       } catch (error) {
-        posthog.capture("error-initLoad", {
+        Sentry?.captureException({ error, message: error.message });
+        posthog?.capture("error-initLoad", {
           error,
           message: error.message,
           toString: JSON.stringify(error)
@@ -213,8 +223,16 @@ export default function Prayer() {
     }
     initLoad();
 
-    registerForPushNotificationsAsync(posthog).then(token => {
-    });
+    registerForPushNotificationsAsync(posthog)
+      .then(token => {
+      })
+      .catch(error => {
+        Sentry?.captureException({ error, message: error.message });
+        posthog?.capture("error-catch-registerForPushNotificationsAsync", {
+          message: error.message,
+          toString: JSON.stringify(error)
+        });
+      });
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
     });
@@ -238,36 +256,44 @@ export default function Prayer() {
           Prayer Times
         </TextHighlight>
       </Container>
-      {
-        // prayerTimes.loading
-        //   ? 
-        //   : 
-        <FlatList
-          keyExtractor={keyExtractor("prayer-times-item", "name")}
-          ItemSeparatorComponent={ItemSeparatorComponent}
-          renderItem={renderItem}
-          ListEmptyComponent={ListEmptyComponent}
-          data={prayerTimes.data}//prayerTimes.data
-          contentContainerStyle={tailwind`flex-1`}
-        />
-      }
+      <FlatList
+        keyExtractor={keyExtractor("prayer-times-item", "name")}
+        ItemSeparatorComponent={ItemSeparatorComponent}
+        renderItem={renderItem}
+        ListEmptyComponent={ListEmptyComponent}
+        data={prayerTimes.data}//prayerTimes.data
+        contentContainerStyle={tailwind`flex-1`}
+      />
     </Box>
   );
 }
 
-async function schedulePushNotification(title: string, body: string, seconds: number) {
-  const notificationId = await Notifications.scheduleNotificationAsync({
-    content: {
-      title,
-      body,
-      sound: "adhan.wav"
-    },
-    trigger: {
-      seconds
-    },
-  });
+async function schedulePushNotification(title: string, body: string, seconds: number, posthog: PostHog) {
+  try {
+    const notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title,
+        body,
+        sound: "adhan.wav",
+        data: {
+          sound: "adhan.wav",
+        }
+      },
+      trigger: {
+        seconds,
+        channelId: "default"
+      },
+    });
 
-  return notificationId;
+    return notificationId;
+  } catch (error) {
+    Sentry?.captureException({ error, message: error.message });
+    posthog?.capture("error-schedulePushNotification", {
+      message: error.message,
+      toString: JSON.stringify(error)
+    });
+    return "";
+  }
 }
 
 async function registerForPushNotificationsAsync(posthog: PostHog) {
@@ -275,25 +301,34 @@ async function registerForPushNotificationsAsync(posthog: PostHog) {
 
   try {
     if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-        sound: "adhan.wav"
-      });
-      posthog.capture("registerForPushNotificationsAsync.setNotificationChannelAsync", {setNotificationChannelAsync:true})
+      posthog?.capture("before.setNotificationChannelAsync", { setNotificationChannelAsync: true })
+      await Notifications.setNotificationChannelAsync(
+        'default',
+        {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+          enableVibrate: true,
+          showBadge: true,
+          enableLights: true,
+          audioAttributes: {
+            usage: Notifications.AndroidAudioUsage.ALARM,
+          },
+          sound: "adhan.wav"
+        }
+      );
+      posthog?.capture("after.setNotificationChannelAsync", { setNotificationChannelAsync: true })
     }
 
     if (Device.isDevice) {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      console.log(`existingStatus: ${existingStatus}`)
-      posthog.capture("registerForPushNotificationsAsync.existingStatus", {existingStatus})
+      posthog?.capture("registerForPushNotificationsAsync.existingStatus", { existingStatus })
       let finalStatus = existingStatus;
       if (existingStatus !== 'granted') {
         const { status } = await Notifications.requestPermissionsAsync();
-      posthog.capture("registerForPushNotificationsAsync.status", {status})
-      finalStatus = status;
+        posthog?.capture("registerForPushNotificationsAsync.status", { status })
+        finalStatus = status;
       }
       if (finalStatus !== 'granted') {
         alert('Failed to get push token for push notification!');
@@ -301,16 +336,19 @@ async function registerForPushNotificationsAsync(posthog: PostHog) {
       }
       // Learn more about projectId:
       // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+      posthog?.capture("before.getExpoPushTokenAsync", {
+        projectId: Constants.expoConfig?.extra?.eas?.projectId
+      })
       token = (await Notifications.getExpoPushTokenAsync({
         projectId: Constants.expoConfig?.extra?.eas?.projectId
       })).data;
-      posthog.capture("registerForPushNotificationsAsync.token", {token})
+      posthog?.capture("registerForPushNotificationsAsync.token", { token })
     } else if (Platform.OS !== "web") {
       alert('Must use physical device for Push Notifications');
     }
   } catch (error) {
-    posthog.capture("error-registerForPushNotificationsAsync", {
-      error,
+    Sentry?.captureException({ error, message: error.message });
+    posthog?.capture("error-registerForPushNotificationsAsync", {
       message: error.message,
       toString: JSON.stringify(error)
     });
