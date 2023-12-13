@@ -11,13 +11,17 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { decodeHTMLEntity } from '../helpers/data';
 import RenderHTML from 'react-native-render-html';
 import tailwind from 'twrnc';
+import { useWindowDimensions } from 'react-native';
 
 dayjs.extend(relativeTime);
 export default function ArticleBody({ article, provider, author }) {
+  const { width } = useWindowDimensions();
+
+  if (article === null || article === undefined) return null;
+
   const onOpenURL = async () => {
     await openURL(author?.link || provider?.link);
   }
-  if (article === null || article === undefined) return null;
   const articleBody = `${decodeHTMLEntity(article?.content || "")?.split(`\n`)?.join(`\n\n`)}`;
   const renderHtmlSource = {
     html: articleBody,
@@ -74,6 +78,7 @@ export default function ArticleBody({ article, provider, author }) {
               <RenderHTML
                 source={renderHtmlSource}
                 tagsStyles={tagsStyles}
+                contentWidth={width}
               />
             )
             : (
