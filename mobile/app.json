@@ -2,10 +2,10 @@
   "scheme": "dachu",
   "name": "Dachu",
   "slug": "dachu",
-  "version": "1.0.0",
+  "version": "1.0.0-fix-request",
   "orientation": "portrait",
   "icon": "./assets/images/icon.png",
-  "userInterfaceStyle": "light",
+  "userInterfaceStyle": "automatic",
   "splash": {
     "image": "./assets/images/splash.png",
     "resizeMode": "contain",
@@ -51,10 +51,22 @@
       "expo-notifications",
       {
         "sounds": [
-          "assets/audio/adhan.wav"
+          "./assets/audio/adhan.wav"
         ]
       }
     ],
-    "expo-localization"
-  ]
+    "expo-localization",
+    "sentry-expo"
+  ],
+  "hooks": {
+    "postPublish": [
+      {
+        "file": "sentry-expo/upload-sourcemaps",
+        "config": {
+          "organization": "zzenz",
+          "project": "dachu"
+        }
+      }
+    ]
+  }
 }
