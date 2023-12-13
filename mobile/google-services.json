@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "455377780825",
+    "project_id": "dachu-10524",
+    "storage_bucket": "dachu-10524.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455377780825:android:2edb46055dbc9b36e1f148",
+        "android_client_info": {
+          "package_name": "com.zzenz.dachu.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEXcJMYk3oJ0T2NMKl__SVshlB3I191WI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

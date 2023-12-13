@@ -9,25 +9,31 @@ import { Context } from "hono";
  * @returns list of articles
  */
 async function getHoustonChron(req: Context["req"]) {
+  console.log(`houston chronicle fetching..`)
   const url = "https://www.houstonchronicle.com/texas-sports-nation/rockets/";
   const scraper = await initScraper(req, url);
   const scraperPreview = await initScraper(req, url);
   const linksPreview = await initScraper(req, url);
   const imagesPreview = await initScraper(req, url);
+  console.log(`image preview done`)
   // get featured article titles
   const headerElem = scraper.querySelector(".dynamicSpotlight--item-header");
   const headersResponse = await headerElem.getText({ spaced: "" });
   const headers = headersResponse?.[scraper?.selector];
+  console.log(`header done`)
   // get top article preview
   const previewElem = scraperPreview.querySelector(".dynamicSpotlight--item-abstract a");
   const previewResponse = await previewElem.getText({ spaced: "" });
   const preview = previewResponse?.[scraperPreview?.selector]?.[0];
+  console.log(`items done`)
   // get articles links
   const linksElem = linksPreview.querySelector("a.dynamicSpotlight--item-header");
   const links = await linksElem.getAttribute("href", false);
+  console.log(`links done`)
   // articles images
   const imagesElem = imagesPreview.querySelector(".dynamicSpotlight--item-img img");
   const images = await imagesElem.getAttribute("data-src", false);
+  console.log(`images done`)
   const articles = headers.map((header, index) => ({
     id: stringToUniqueNumber(`hc-${index}-${links[index]}`),
     date: null,
@@ -51,12 +57,14 @@ async function getHoustonChron(req: Context["req"]) {
  * @returns list of articles from any sources
  */
 export default async function getRocketsNews(req: Context["req"]) {
+  console.log(`fetching wire...`)
   const wireResponse = await Promise.allSettled([
     httpRequest({
       url: "https://rocketswire.usatoday.com/wp-json/wp/v2/posts"
     }),
     getHoustonChron(req)
   ]);
+  console.log(`wire done`)
   const [wireArticles = [], hcArticles = []] = handleAllSettledResults<any[]>(wireResponse);
   const rwArticles = wireArticles.map(article => ({
     id: article.id,

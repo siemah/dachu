@@ -20,6 +20,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import PostHog, { usePostHog } from 'posthog-react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -31,6 +32,7 @@ Notifications.setNotificationHandler({
 });
 
 export default function Prayer() {
+  const posthog = usePostHog();
   const notificationListener = useRef<Notifications.Subscription>();
   const responseListener = useRef<Notifications.Subscription>();
   const AsyncStorage = useAsyncStorage('@prayer_notification');
@@ -87,7 +89,7 @@ export default function Prayer() {
         const notificationId = await schedulePushNotification(
           `Prayer time`,
           `It is nearly time for ${item.name}`,
-          diff / 1000
+          20//diff / 1000
         );
         const prayerConfig = {
           ...(prayerNotificationConfig || {}),
@@ -168,23 +170,26 @@ export default function Prayer() {
     const loadPrayerNotificationSetups = async () => {
       try {
         const response = await AsyncStorage.getItem();
+        posthog.capture("loadPrayerNotificationSetups.response", {response})
         setPrayerNotificationConfig(
           JSON.parse(response || "null")
         );
       } catch (error) {
+        posthog.capture("error-loadPrayerNotificationSetups", {
+          error,
+          message: error.message,
+          toString: JSON.stringify(error)
+        })
       }
     }
     loadPrayerNotificationSetups();
-
-    return () => {
-
-    }
   }, []);
 
   useEffect(() => {
     const initLoad = async () => {
       try {
         let { status, } = await Location.requestForegroundPermissionsAsync();
+        posthog.capture("initLoad.status", {status})
 
         if (status !== Location.PermissionStatus.GRANTED) {
           handleLocationRejection();
@@ -192,17 +197,23 @@ export default function Prayer() {
         }
 
         let location = await Location.getCurrentPositionAsync();
+        posthog.capture("initLoad.location", {location})
         setGpsCoords({
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         });
       } catch (error) {
+        posthog.capture("error-initLoad", {
+          error,
+          message: error.message,
+          toString: JSON.stringify(error)
+        });
         alert("Something went wrong please check your network or try again after a while!")
       }
     }
     initLoad();
 
-    registerForPushNotificationsAsync().then(token => {
+    registerForPushNotificationsAsync(posthog).then(token => {
     });
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -259,36 +270,50 @@ async function schedulePushNotification(title: string, body: string, seconds: nu
   return notificationId;
 }
 
-async function registerForPushNotificationsAsync() {
+async function registerForPushNotificationsAsync(posthog: PostHog) {
   let token;
 
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
+  try {
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+        sound: "adhan.wav"
+      });
+      posthog.capture("registerForPushNotificationsAsync.setNotificationChannelAsync", {setNotificationChannelAsync:true})
+    }
 
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      console.log(`existingStatus: ${existingStatus}`)
+      posthog.capture("registerForPushNotificationsAsync.existingStatus", {existingStatus})
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+      posthog.capture("registerForPushNotificationsAsync.status", {status})
       finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      // Learn more about projectId:
+      // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+      token = (await Notifications.getExpoPushTokenAsync({
+        projectId: Constants.expoConfig?.extra?.eas?.projectId
+      })).data;
+      posthog.capture("registerForPushNotificationsAsync.token", {token})
+    } else if (Platform.OS !== "web") {
+      alert('Must use physical device for Push Notifications');
     }
-    if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
-      return;
-    }
-    // Learn more about projectId:
-    // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
-    token = (await Notifications.getExpoPushTokenAsync({
-      projectId: Constants.expoConfig?.extra?.eas?.projectId
-    })).data;
-  } else if (Platform.OS !== "web") {
-    alert('Must use physical device for Push Notifications');
+  } catch (error) {
+    posthog.capture("error-registerForPushNotificationsAsync", {
+      error,
+      message: error.message,
+      toString: JSON.stringify(error)
+    });
   }
 
   return token;
