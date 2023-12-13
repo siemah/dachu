@@ -23,13 +23,14 @@ import Constants from 'expo-constants';
 import PostHog, { usePostHog } from 'posthog-react-native';
 import SentryNative from '@sentry/react-native';
 import SentryBrowser from '@sentry/browser';
+import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
-    priority: Notifications.AndroidNotificationPriority.HIGH
+    priority: Notifications.AndroidNotificationPriority.HIGH,
   }),
 });
 
@@ -43,42 +44,68 @@ export default function Prayer() {
   const { top, bottom } = useSafeAreaInsets();
   const { navigate } = useNavigation();
   const [prayerNotificationConfig, setPrayerNotificationConfig] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [gpsCoords, setGpsCoords] = useState<{
     latitude: number,
     longitude: number
   }>(undefined)
-  const [prayerTimes] = usePrayerTimes(gpsCoords);
-  const ListEmptyComponent = () => (
-    <Container
-      childrenClassName='flex-1 items-center justify-center'
-      className='flex-1'
-    >
-      {
-        prayerTimes.loading
-          ? <LoadingIndicator color={"#2075f3"} size={"large"} />
-          : (
-            <HighlightButton
-              borderContainerClassName='bg-slate-900'
-              className='bg-[#ffc32a] gap-2 flex-row p-0 border border-slate-900'
-              onPress={onGoHome}
-            >
-              <Text className='text-white text-slate-900 font-bold py-2 px-3'>
-                Go home
-              </Text>
-              <Box className='bg-slate-900 h-full w-0.5' />
-              <Box className='items-center justify-center pr-2'>
-                <Ionicons
-                  size={20}
-                  color={tailwind`text-slate-900`.color.toString()}
-                  name='arrow-forward-outline'
-                />
-              </Box>
-            </HighlightButton>
-          )
-      }
+  const [prayerTimes, { refetch }] = usePrayerTimes(gpsCoords);
+  const onRefresh = async () => {
+    await refetch();
+  };
+  const ListEmptyComponent = () => {
+    const loadingText = loading === true
+      ? "Fetching your coordinates"
+      : prayerTimes.loading === true
+        ? "Fetching prayer times"
+        : "";
 
-    </Container>
-  )
+    return (
+      <Container
+        childrenClassName='flex-1 items-center justify-center'
+        className='flex-1'
+      >
+        {
+          prayerTimes.loading || loading
+            ? (
+              <LoadingIndicator
+                color={"#2075f3"}
+                size={"large"}
+                className={"gap-4"}
+              >
+                <Animated.Text
+                  style={tailwind`text-slate-500 font-semibold`}
+                  entering={FadeInDown}
+                  exiting={FadeOutUp}
+                >
+                  {loadingText}
+                </Animated.Text>
+              </LoadingIndicator>
+            )
+            : (
+              <HighlightButton
+                borderContainerClassName='bg-slate-900'
+                className='bg-[#ffc32a] gap-2 flex-row p-0 border border-slate-900'
+                onPress={onRefresh}
+              >
+                <Text className='text-white text-slate-900 font-bold py-2 px-3'>
+                  Refresh
+                </Text>
+                <Box className='bg-slate-900 h-full w-0.5' />
+                <Box className='items-center justify-center pr-2'>
+                  <Ionicons
+                    size={20}
+                    color={tailwind`text-slate-900`.color.toString()}
+                    name='refresh-outline'
+                  />
+                </Box>
+              </HighlightButton>
+            )
+        }
+
+      </Container>
+    );
+  }
   const onTogglePrayerNotification = (item: Record<string, string>) => async (value: boolean) => {
     const date = new Date();
     const [hh, mm] = item.time.split(":");
@@ -92,7 +119,7 @@ export default function Prayer() {
         const notificationId = await schedulePushNotification(
           `Prayer time`,
           `It is nearly time for ${item.name}`,
-          20,//diff / 1000
+          10,//diff / 1000
           posthog
         );
         const prayerConfig = {
@@ -195,6 +222,7 @@ export default function Prayer() {
 
   useEffect(() => {
     const initLoad = async () => {
+      setLoading(true);
       try {
         let { status, } = await Location.requestForegroundPermissionsAsync();
         posthog?.capture("initLoad.status", { status })
@@ -220,6 +248,7 @@ export default function Prayer() {
         });
         alert("Something went wrong please check your network or try again after a while!")
       }
+      setLoading(false);
     }
     initLoad();
 
@@ -277,11 +306,12 @@ async function schedulePushNotification(title: string, body: string, seconds: nu
         sound: "adhan.wav",
         data: {
           sound: "adhan.wav",
-        }
+        },
+        vibrate: [0]
       },
       trigger: {
         seconds,
-        channelId: "default"
+        channelId: "default",
       },
     });
 

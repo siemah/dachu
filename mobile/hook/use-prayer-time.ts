@@ -50,5 +50,5 @@ export function usePrayerTimes(config?: UsePrayerTimes) {
   return [{
     loading: query.isFetching,
     data
-  }] as const;
+  }, query] as const;
 }
