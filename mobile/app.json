@@ -2,7 +2,7 @@
   "scheme": "dachu",
   "name": "Dachu",
   "slug": "dachu",
-  "version": "1.0.0-fix-request",
+  "version": "1.0.0-beta",
   "orientation": "portrait",
   "icon": "./assets/images/icon.png",
   "userInterfaceStyle": "automatic",
