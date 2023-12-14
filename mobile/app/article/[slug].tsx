@@ -12,8 +12,12 @@ import Text from '../../components/text';
 import ArticlePlaceholder from '../../components/article-placeholder';
 import { useArticle } from '../../hook/use-article';
 import ArticleBody from '../../components/article-body';
+import { stringToUniqueNumber } from '../../helpers/data';
+import useBookmarks from '../../hook/use-bookmarks';
+import Animated, { ZoomIn, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
 
 export default function Article() {
+  const [, { toggleBookmark, isBookmarked }] = useBookmarks();
   const { top, bottom } = useSafeAreaInsets();
   const { canGoBack, goBack, navigate } = useNavigation();
   const params = useGlobalSearchParams();
@@ -21,10 +25,58 @@ export default function Article() {
     link: `${params.link}`,
     provider: `${params.provider}`
   });
+  const articleId = stringToUniqueNumber(params.link);
+  const bookmarked = isBookmarked(articleId);
+  const animatedStyles = useAnimatedStyle(() => {
+    return ({
+      transform: [{
+        scale: withSpring(bookmarked ? 1 : 0)
+      }],
+    })
+  });
+  const exiting = () => {
+    'worklet';
+    const animations = {
+      transform: [{
+        scale: withTiming(0)
+      }],
+      opacity: withTiming(0.5),
+    };
+    const initialValues = {
+      transform: [{
+        scale: 1
+      }],
+      opacity: 1,
+    };
+    return {
+      initialValues,
+      animations,
+    };
+  };
+  const outlineExiting = () => {
+    'worklet';
+    const animations = {
+      transform: [{
+        scale: withTiming(0, { duration: 200 })
+      }],
+      opacity: withTiming(0, { duration: 100 }),
+    };
+    const initialValues = {
+      transform: [{
+        scale: 1
+      }],
+      opacity: 1,
+    };
+    return {
+      initialValues,
+      animations,
+    };
+  };
+
   const provider = {
-    name: params?.originProvider || params?.provider || "N/A",
-    image: params?.providerImage,
-    link: params?.providerLink || params?.link,
+    name: `${params?.originProvider || params?.provider || "N/A"}`,
+    image: `${params?.providerImage}`,
+    link: `${params?.providerLink || params?.link}`,
   };
 
   const onGoBack = () => {
@@ -40,6 +92,28 @@ export default function Article() {
     if (typeof params?.link === "string") {
       await openURL(params?.link)
     }
+  }
+
+  const onBookmark = async () => {
+    try {
+      await toggleBookmark({
+        id: articleId,
+        title: `${params.title}`,
+        link: params.link,
+        image: params.image,
+        subtitle: `${params.subtitle}`,
+        description: article?.description || "",
+        content: article?.content,
+        provider,
+        author: article?.author
+      });
+    } catch (error) {
+      alert(`Something went wrong(${error?.message}) please try again!`)
+    }
+  }
+  // todo: no idea what to put here
+  const onLike = async () => {
+
   }
 
   return (
@@ -61,12 +135,41 @@ export default function Article() {
                 name='heart-outline'
               />
             </Button>
-            <Button>
-              <Ionicons
-                size={25}
-                color={"#111111"}
-                name='bookmark-outline'
-              />
+            <Button onPress={onBookmark} hitSlop={{
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: 10
+            }}
+            >
+              {
+                bookmarked && (
+                  <Animated.View
+                    style={[animatedStyles]}
+                    exiting={exiting}
+                  >
+                    <Ionicons
+                      size={25}
+                      color={'#ffa32a'}
+                      name={'bookmark-sharp'}
+                    />
+                  </Animated.View>
+                )
+              }
+              {
+                !bookmarked && (
+                  <Animated.View
+                    entering={ZoomIn.springify()}
+                    exiting={outlineExiting}
+                  >
+                    <Ionicons
+                      size={25}
+                      color={'#111111'}
+                      name={'bookmark-outline'}
+                    />
+                  </Animated.View>
+                )
+              }
             </Button>
             <Button onPress={onOpenUrl}>
               <Ionicons
