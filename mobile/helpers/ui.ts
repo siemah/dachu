@@ -10,9 +10,9 @@ export function getIcon(index: number, isFocused: boolean): any {
   if (index === 0) {
     isFocused ? (icon = 'grid') : (icon = 'grid-outline');
   } else if (index === 1) {
-    isFocused ? (icon = 'settings') : (icon = 'settings-outline');
+    isFocused ? (icon = 'time') : (icon = 'time-outline');
   } else if (index === 2) {
-    isFocused ? (icon = 'pricetags') : (icon = 'pricetags-outline');
+    isFocused ? (icon = 'bookmarks') : (icon = 'bookmarks-outline');
   } else if (index === 3) {
     isFocused ? (icon = 'search') : (icon = 'search-outline');
   } else if (index === 4) {
@@ -36,6 +36,8 @@ export function getScreenColor(pathname: string) {
     color = "#bfecff";
   } else if (pathname.includes("prayer")) {
     color = "#f2f8fc";
+  } else if (pathname.includes("bookmark")) {
+    color = "#ceffd3";
   }
 
   return color;

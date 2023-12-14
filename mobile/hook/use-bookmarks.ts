@@ -25,6 +25,12 @@ export default function useBookmarks() {
   const isBookmarked = (articleId: number) => {
     return !!bookmarks?.[articleId];
   }
+  const listify = () => {
+    return Object.values(bookmarks).map(bookmark => bookmark)
+  }
+  const getArticle = (articleId: number) => {
+    return bookmarks?.[articleId] || null;
+  }
 
   useEffect(() => {
     const loadBookmarks = async () => {
@@ -40,7 +46,9 @@ export default function useBookmarks() {
     bookmarks,
     {
       toggleBookmark,
-      isBookmarked
+      isBookmarked,
+      listify,
+      getArticle
     }
   ] as const;
 }

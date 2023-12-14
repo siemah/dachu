@@ -17,15 +17,16 @@ import useBookmarks from '../../hook/use-bookmarks';
 import Animated, { ZoomIn, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
 
 export default function Article() {
-  const [, { toggleBookmark, isBookmarked }] = useBookmarks();
+  const [, { toggleBookmark, isBookmarked, getArticle }] = useBookmarks();
   const { top, bottom } = useSafeAreaInsets();
   const { canGoBack, goBack, navigate } = useNavigation();
   const params = useGlobalSearchParams();
+  const articleId = stringToUniqueNumber(`${params.link}`);
   const [{ loading, data: article }] = useArticle({
     link: `${params.link}`,
-    provider: `${params.provider}`
+    provider: `${params.provider}`,
+    fromBookmark: getArticle(articleId)
   });
-  const articleId = stringToUniqueNumber(params.link);
   const bookmarked = isBookmarked(articleId);
   const animatedStyles = useAnimatedStyle(() => {
     return ({
@@ -135,13 +136,7 @@ export default function Article() {
                 name='heart-outline'
               />
             </Button>
-            <Button onPress={onBookmark} hitSlop={{
-              top: 10,
-              left: 10,
-              right: 10,
-              bottom: 10
-            }}
-            >
+            <Button onPress={onBookmark}>
               {
                 bookmarked && (
                   <Animated.View

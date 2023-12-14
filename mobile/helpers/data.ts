@@ -18,9 +18,9 @@ export function decodeHTMLEntity(stringValue: null | string | undefined) {
  * @param inputString the string to convert to a number
  * @returns a unique number based on a string
  */
-export function stringToUniqueNumber(inputString) {
+export function stringToUniqueNumber(inputString: string | null | undefined) {
   let hash = 5381;
-
+  if(!inputString) return 0;
   for (let i = 0; i < inputString.length; i++) {
     hash = (hash * 33) ^ inputString.charCodeAt(i);
   }

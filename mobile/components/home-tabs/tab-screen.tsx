@@ -111,17 +111,14 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
     };
 
     return (
-      index < 0
-        ? (
-          null
-        )
+      index === 0
+        ? null
         : (
           <Container
-            key={`rockets-home-tab-item-${article.id}`}
+            key={`${screen}-home-tab-item-${article.id}`}
             className='md:flex-1 md:max-w-[33%]'
           >
             <HorizontalCard
-              key={`rockets-home-tab-item-${article.id}`}
               title={article.title}
               image={article.image}
               subtitle={article?.provider?.origin || article?.provider?.name}
@@ -150,7 +147,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
 
   return (
     <FlatList
-      data={articles?.slice(1, articles.length)}
+      data={articles}
       ListHeaderComponent={ListHeaderComponent}
       renderItem={renderItem}
       contentContainerStyle={tailwind`gap-6 pb-8 md:flex-1`}
