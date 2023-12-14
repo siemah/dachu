@@ -1,9 +1,10 @@
-import { PostHogProvider } from 'posthog-react-native'
+import { PostHogOptions, PostHogProvider } from 'posthog-react-native'
 import { ComponentProps } from 'react';
 import { Platform, View } from 'react-native';
 
-const postHogOptions = {
+const postHogOptions: PostHogOptions = {
   host: "https://eu.posthog.com",
+  enable: process.env.NODE_ENV === "production"
 };
 
 export default function ReportingProvider({ children }: ComponentProps<typeof View>) {
