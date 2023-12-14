@@ -203,7 +203,7 @@ export default function Article() {
           </Box>
         </Container>
         <Container>
-          <ArticlePlaceholder show={loading} />
+          <ArticlePlaceholder show={loading || loadingBookmarks} />
         </Container>
         <ArticleBody
           article={article}

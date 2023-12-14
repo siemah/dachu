@@ -13,13 +13,15 @@ import useBookmarks from '../../hook/use-bookmarks';
 import HighlightButton from '../../components/highlight-button';
 import Text from '../../components/text';
 import { Ionicons } from '@expo/vector-icons';
-import { FlatList } from 'react-native';
-import { Link, useNavigation } from 'expo-router';
+import { FlatList, RefreshControl } from 'react-native';
+import { useNavigation } from 'expo-router';
+import LoadingIndicator from '../../components/loading-indicator';
+import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated';
 
 export default function Bookmark() {
   const { top, bottom } = useSafeAreaInsets();
   const screenColor = useScreenColor();
-  const [, { listify }] = useBookmarks();
+  const [, { listify, loading, refetch }] = useBookmarks();
   const { navigate } = useNavigation();
   const data = listify();
   const renderItem = ({ item: article }: FlatListRender<Article>) => {
@@ -66,28 +68,54 @@ export default function Bookmark() {
         childrenClassName='flex-1 items-center justify-center gap-4'
         className='flex-1'
       >
-        <Text className='text-green-800 text-lg text-center'>
-          There is no bookmarks you need to add articles using the following
-        </Text>
-        <HighlightButton
-          borderContainerClassName='bg-slate-900'
-          className='bg-[#ffc32a] gap-2 flex-row p-0 border border-slate-900'
-          onPress={onMoveHome}
-        >
-          <Text className='text-white text-slate-900 font-bold py-2 px-3'>
-            Bookmark articles
-          </Text>
-          <Box className='bg-slate-900 h-full w-0.5' />
-          <Box className='items-center justify-center pr-2'>
-            <Ionicons
-              size={20}
-              color={tailwind`text-slate-900`.color.toString()}
-              name='newspaper-outline'
-            />
-          </Box>
-        </HighlightButton>
+        {
+          loading === true
+            ? (
+              <LoadingIndicator
+                color={"#2075f3"}
+                size={"large"}
+                className={"gap-4"}
+              >
+                <Animated.Text
+                  style={tailwind`text-slate-500 font-semibold`}
+                  entering={FadeInDown}
+                  exiting={FadeOutUp}
+                >
+                  Fetching bookmarks
+                </Animated.Text>
+              </LoadingIndicator>
+            )
+            : (
+              <>
+                <Text className='text-green-800 text-lg text-center'>
+                  There is no bookmarks you need to add articles using the following
+                </Text>
+                <HighlightButton
+                  borderContainerClassName='bg-slate-900'
+                  className='bg-[#ffc32a] gap-2 flex-row p-0 border border-slate-900'
+                  onPress={onMoveHome}
+                >
+                  <Text className='text-white text-slate-900 font-bold py-2 px-3'>
+                    Bookmark articles
+                  </Text>
+                  <Box className='bg-slate-900 h-full w-0.5' />
+                  <Box className='items-center justify-center pr-2'>
+                    <Ionicons
+                      size={20}
+                      color={tailwind`text-slate-900`.color.toString()}
+                      name='newspaper-outline'
+                    />
+                  </Box>
+                </HighlightButton>
+              </>
+            )
+        }
       </Container>
     );
+  }
+
+  const onRefresh = () => {
+    refetch();
   }
 
   return (
@@ -106,6 +134,15 @@ export default function Bookmark() {
         ListEmptyComponent={ListEmptyComponent}
         data={data}
         contentContainerStyle={tailwind`flex-1 gap-8`}
+        refreshing={loading}
+        onRefresh={onRefresh}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={onRefresh}
+            colors={["#8080b0", "#7fbcff"]}
+          />
+        }
       />
     </Box>
   )

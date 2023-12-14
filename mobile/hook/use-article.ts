@@ -16,10 +16,11 @@ export function useArticle({ link, provider, fromBookmark }: UseArticle) {
     queryFn: getArticle(`${globalLinks.article}/${provider}/${articleLink}`),
     enabled: fromBookmark === null ? true : false,
   });
+
   return [
     {
       loading: query.isFetching,
-      data: query.data
+      data: fromBookmark || query.data
     }
   ] as const;
 }
