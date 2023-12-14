@@ -17,15 +17,16 @@ import useBookmarks from '../../hook/use-bookmarks';
 import Animated, { ZoomIn, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
 
 export default function Article() {
-  const [, { toggleBookmark, isBookmarked, getArticle }] = useBookmarks();
+  const [, { loading: loadingBookmarks, toggleBookmark, isBookmarked, getArticle }] = useBookmarks();
   const { top, bottom } = useSafeAreaInsets();
   const { canGoBack, goBack, navigate } = useNavigation();
   const params = useGlobalSearchParams();
   const articleId = stringToUniqueNumber(`${params.link}`);
+  const fromBookmark = getArticle(articleId)
   const [{ loading, data: article }] = useArticle({
     link: `${params.link}`,
     provider: `${params.provider}`,
-    fromBookmark: getArticle(articleId)
+    fromBookmark: loadingBookmarks ? {} : fromBookmark
   });
   const bookmarked = isBookmarked(articleId);
   const animatedStyles = useAnimatedStyle(() => {
@@ -97,6 +98,7 @@ export default function Article() {
 
   const onBookmark = async () => {
     try {
+      console.log(`bookmarking..`, article?.content.length, `<[[[[<<<<<<bookmarking>>>>>>]]]]>`)
       await toggleBookmark({
         id: articleId,
         title: `${params.title}`,

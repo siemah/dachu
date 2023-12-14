@@ -105,7 +105,7 @@ export default function Bookmark() {
         renderItem={renderItem}
         ListEmptyComponent={ListEmptyComponent}
         data={data}
-        contentContainerStyle={tailwind`flex-1`}
+        contentContainerStyle={tailwind`flex-1 gap-8`}
       />
     </Box>
   )

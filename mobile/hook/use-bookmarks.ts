@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
  */
 const bookmarkedArticles = "@article_bookmarked";
 export default function useBookmarks() {
+  const [loading, setLoading] = useState(true);
   const [bookmarks, setBookmarks] = useState({});
   const { getItem, setItem, } = useAsyncStorage(bookmarkedArticles);
   const toggleBookmark = async (article: Record<string, any>) => {
@@ -34,9 +35,10 @@ export default function useBookmarks() {
 
   useEffect(() => {
     const loadBookmarks = async () => {
+      setLoading(true);
       let oldBookmarks = await getItem() ?? "{}";
       const oldBookmarksObj = JSON.parse(oldBookmarks);
-
+      setLoading(false);
       setBookmarks(oldBookmarksObj);
     }
     loadBookmarks();
@@ -45,6 +47,7 @@ export default function useBookmarks() {
   return [
     bookmarks,
     {
+      loading,
       toggleBookmark,
       isBookmarked,
       listify,
