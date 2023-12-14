@@ -98,7 +98,6 @@ export default function Article() {
 
   const onBookmark = async () => {
     try {
-      console.log(`bookmarking..`, article?.content.length, `<[[[[<<<<<<bookmarking>>>>>>]]]]>`)
       await toggleBookmark({
         id: articleId,
         title: `${params.title}`,
