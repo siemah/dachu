@@ -32,16 +32,16 @@ export default function useBookmarks() {
   const getArticle = (articleId: number) => {
     return bookmarks?.[articleId] || null;
   }
+  const refetch = async () => {
+    setLoading(true);
+    let oldBookmarks = await getItem() ?? "{}";
+    const oldBookmarksObj = JSON.parse(oldBookmarks);
+    setLoading(false);
+    setBookmarks(oldBookmarksObj);
+  }
 
   useEffect(() => {
-    const loadBookmarks = async () => {
-      setLoading(true);
-      let oldBookmarks = await getItem() ?? "{}";
-      const oldBookmarksObj = JSON.parse(oldBookmarks);
-      setLoading(false);
-      setBookmarks(oldBookmarksObj);
-    }
-    loadBookmarks();
+    refetch();
   }, []);
 
   return [
@@ -51,7 +51,8 @@ export default function useBookmarks() {
       toggleBookmark,
       isBookmarked,
       listify,
-      getArticle
+      getArticle,
+      refetch
     }
   ] as const;
 }
