@@ -40,19 +40,22 @@ export async function getArticleContent({
  */
 async function getArticleFromWire(url: string, req: Context["req"]) {
   const bodyScraper = await initScraper(req, url);
-  const extraDataScraper = await initScraper(req, url);
+  const authorNameScraper = await initScraper(req, url);
+  const dateScraper = await initScraper(req, url);
   const authorLinkScraper = await initScraper(req, url);
   // body
   const articleBody = bodyScraper.querySelector("[itemprop=articleBody]");
   const bodyResponse = await articleBody.getText({ spaced: "" });
   const [articleContent = "N/A"] = bodyResponse?.[bodyScraper?.selector];
-  // author + date
-  const authorBody = extraDataScraper.querySelector("[type='application/ld+json']");
+  // author name
+  const authorBody = authorNameScraper.querySelector("[itemprop='author'] [itemprop='name']");
   const authorResponse = await authorBody.getText({ spaced: "" });
-  const [articleExtraData = "{}"] = authorResponse?.[authorBody?.selector];
-  const extraData = JSON.parse(articleExtraData);
-  const authorName = extraData?.author?.name;
-  const date = extraData?.datePublished || null;
+  const [authorName = "N/A"] = authorResponse?.[authorBody?.selector];
+  // date
+  const dateElement = dateScraper.querySelector("[itemprop='author'] .article__author__date");
+  const dateResponse = await dateElement.getText({ spaced: "" });
+  const [rawDate] = dateResponse?.[dateElement?.selector];
+  const date = rawDate?.substring(0, rawDate?.length - 2)?.trim();
   // author link
   const authorLinkBody = authorLinkScraper.querySelector("[itemprop=author] a");
   const authorLink = await authorLinkBody.getAttribute("href");

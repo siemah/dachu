@@ -9,31 +9,25 @@ import { Context } from "hono";
  * @returns list of articles
  */
 async function getHoustonChron(req: Context["req"]) {
-  console.log(`houston chronicle fetching..`)
   const url = "https://www.houstonchronicle.com/texas-sports-nation/rockets/";
   const scraper = await initScraper(req, url);
   const scraperPreview = await initScraper(req, url);
   const linksPreview = await initScraper(req, url);
   const imagesPreview = await initScraper(req, url);
-  console.log(`image preview done`)
   // get featured article titles
-  const headerElem = scraper.querySelector(".dynamicSpotlight--item-header");
+  const headerElem = scraper.querySelector(".package .grid h2");
   const headersResponse = await headerElem.getText({ spaced: "" });
   const headers = headersResponse?.[scraper?.selector];
-  console.log(`header done`)
   // get top article preview
-  const previewElem = scraperPreview.querySelector(".dynamicSpotlight--item-abstract a");
+  const previewElem = scraperPreview.querySelector(".package .grid > :first-child div a:nth-child(n+2)");
   const previewResponse = await previewElem.getText({ spaced: "" });
   const preview = previewResponse?.[scraperPreview?.selector]?.[0];
-  console.log(`items done`)
   // get articles links
-  const linksElem = linksPreview.querySelector("a.dynamicSpotlight--item-header");
+  const linksElem = linksPreview.querySelector(".package .grid h2 a");
   const links = await linksElem.getAttribute("href", false);
-  console.log(`links done`)
   // articles images
-  const imagesElem = imagesPreview.querySelector(".dynamicSpotlight--item-img img");
-  const images = await imagesElem.getAttribute("data-src", false);
-  console.log(`images done`)
+  const imagesElem = imagesPreview.querySelector(".package .grid img");
+  const images = await imagesElem.getAttribute("src", false);
   const articles = headers.map((header, index) => ({
     id: stringToUniqueNumber(`hc-${index}-${links[index]}`),
     date: null,
