@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import TabScreenPlaceholder from './placeholder';
 import { RefreshControl } from 'react-native-gesture-handler';
+import { decodeHTMLEntity } from '../../helpers/data';
 
 dayjs.extend(relativeTime);
 
@@ -34,7 +35,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
       pathname: `/article/${article.id}`,
       params: {
         image: article.image,
-        title: article.title,
+        title: decodeHTMLEntity(article.title),
         link: article.link,
         provider: article?.provider?.name,
         providerImage: article?.provider?.image,
@@ -46,10 +47,10 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
 
     return (
       <Card
-        title={`—${article.title}`}
+        title={decodeHTMLEntity(`—${article.title}`)}
         image={article.image}
         subtitle={article?.provider?.origin || article?.provider?.name}
-        preview={article?.preview || article.title}
+        preview={decodeHTMLEntity(article?.preview || article.title)}
         href={href}
         imageClassName={`md:h-100`}
       >
@@ -100,7 +101,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
       pathname: `/article/${article.id}`,
       params: {
         image: article.image,
-        title: article.title,
+        title: decodeHTMLEntity(article.title),
         link: article.link,
         provider: article?.provider?.name,
         providerImage: article?.provider?.image,
@@ -119,7 +120,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
             className='md:flex-1 md:max-w-[33%]'
           >
             <HorizontalCard
-              title={article.title}
+              title={decodeHTMLEntity(article.title)}
               image={article.image}
               subtitle={article?.provider?.origin || article?.provider?.name}
               href={href}
