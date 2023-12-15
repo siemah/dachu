@@ -21,6 +21,7 @@ export function useArticle({ link, provider, fromBookmark }: UseArticle) {
     {
       loading: query.isFetching,
       data: fromBookmark || query.data
-    }
+    },
+    query
   ] as const;
 }

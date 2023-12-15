@@ -17,6 +17,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import { useNavigation } from 'expo-router';
 import LoadingIndicator from '../../components/loading-indicator';
 import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated';
+import { decodeHTMLEntity } from '../../helpers/data';
 
 export default function Bookmark() {
   const { top, bottom } = useSafeAreaInsets();
@@ -29,7 +30,7 @@ export default function Bookmark() {
       pathname: `/article/${article.id}`,
       params: {
         image: article.image,
-        title: article.title,
+        title: decodeHTMLEntity(article.title),
         link: article.link,
         provider: article?.provider?.name,
         providerImage: article?.provider?.image,
@@ -47,7 +48,7 @@ export default function Bookmark() {
       >
         <HorizontalCard
           key={`rockets-home-tab-item-${article.id}`}
-          title={article.title}
+          title={decodeHTMLEntity(article.title)}
           image={article.image}
           subtitle={article?.provider?.origin || article?.provider?.name}
           href={href}
@@ -136,6 +137,7 @@ export default function Bookmark() {
         contentContainerStyle={tailwind`flex-1 gap-8`}
         refreshing={loading}
         onRefresh={onRefresh}
+        numColumns={tailwind.prefixMatch("md") ? 3 : 1}
         refreshControl={
           <RefreshControl
             refreshing={loading}

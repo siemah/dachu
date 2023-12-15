@@ -10,7 +10,7 @@ import HorizontalCard from '../horizontal-card';
 import LoadingIndicator from '../loading-indicator';
 import { FlatList, Platform, View } from 'react-native';
 import tailwind from 'twrnc';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { getHomeData } from '../../services/home';
 import { FlatListRender } from '../../types/ui';
 import { Article } from '../../types/data';
@@ -18,11 +18,16 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import TabScreenPlaceholder from './placeholder';
 import { RefreshControl } from 'react-native-gesture-handler';
-import { decodeHTMLEntity } from '../../helpers/data';
+import { decodeHTMLEntity, stringToUniqueNumber } from '../../helpers/data';
+import BookmarkButton from '../bookmark-button';
+import useBookmarks from '../../hook/use-bookmarks';
+import { getArticle } from '../../services/article';
+import globalLinks from '../../config/links';
 
 dayjs.extend(relativeTime);
 
 export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | "lfc" }) {
+  const [, { isBookmarked, toggleBookmark }] = useBookmarks();
   const query = useQuery({
     queryKey: "home",
     queryFn: getHomeData,
@@ -44,6 +49,8 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
         subtitle: screen,
       }
     };
+    const articleId = stringToUniqueNumber(`${article.link}`);
+    const bookmarked = isBookmarked(articleId);
 
     return (
       <Card
@@ -83,20 +90,47 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
               <Ionicons
                 name='heart-outline'
                 color={'#111111'}
-                size={30} />
+                size={30}
+              />
             </Button>
-            <Button>
-              <Ionicons
-                name='bookmark-outline'
-                color={'#111111'}
-                size={30} />
-            </Button>
+            <BookmarkButton
+              bookmarked={bookmarked}
+              onPress={onBookmark(articleId, article)}
+            />
           </Box>
         </Box>
       </Card>
     );
   };
+  const onBookmark = (articleId: number, article: Article) => async () => {
+    try {
+      const bookmarked = isBookmarked(articleId);
+      const articleLink = encodeURIComponent(`${article.link}`);
+      const url = `${globalLinks.article}/${article?.provider?.name}/${articleLink}`;
+      const articleBody = bookmarked === false ? await getArticle(url)() : null;
+      await toggleBookmark({
+        id: articleId,
+        title: `${article.title}`,
+        link: article.link,
+        image: article.image,
+        subtitle: `${screen}`,
+        content: articleBody?.content,
+        date: articleBody?.date,
+        description: article?.preview || "",
+        provider: {
+          name: article?.provider?.name,
+          image: article?.provider?.image,
+          link: article?.provider?.link,
+        },
+        author: articleBody?.author
+      });
+    } catch (error) {
+      alert(`Something went wrong(${error?.message}) please try again!`)
+    }
+  }
+
   const renderItem = ({ item: article, index }: FlatListRender<Article>) => {
+    const articleId = stringToUniqueNumber(`${article.link}`);
     const href = {
       pathname: `/article/${article.id}`,
       params: {
@@ -110,6 +144,7 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
         subtitle: screen,
       }
     };
+    const bookmarked = isBookmarked(articleId);
 
     return (
       index === 0
@@ -124,7 +159,13 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
               image={article.image}
               subtitle={article?.provider?.origin || article?.provider?.name}
               href={href}
-            />
+            >
+              <BookmarkButton
+                bookmarked={bookmarked}
+                onPress={onBookmark(articleId, article)}
+                className='absolute top-0 right-0'
+              />
+            </HorizontalCard>
           </Container>
         )
     );

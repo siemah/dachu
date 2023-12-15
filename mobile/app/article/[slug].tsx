@@ -15,6 +15,7 @@ import ArticleBody from '../../components/article-body';
 import { stringToUniqueNumber } from '../../helpers/data';
 import useBookmarks from '../../hook/use-bookmarks';
 import Animated, { ZoomIn, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import BookmarkButton from '../../components/bookmark-button';
 
 export default function Article() {
   const [, { loading: loadingBookmarks, toggleBookmark, isBookmarked, getArticle }] = useBookmarks();
@@ -29,51 +30,6 @@ export default function Article() {
     fromBookmark: loadingBookmarks ? {} : fromBookmark
   });
   const bookmarked = isBookmarked(articleId);
-  const animatedStyles = useAnimatedStyle(() => {
-    return ({
-      transform: [{
-        scale: withSpring(bookmarked ? 1 : 0)
-      }],
-    })
-  });
-  const exiting = () => {
-    'worklet';
-    const animations = {
-      transform: [{
-        scale: withTiming(0)
-      }],
-      opacity: withTiming(0.5),
-    };
-    const initialValues = {
-      transform: [{
-        scale: 1
-      }],
-      opacity: 1,
-    };
-    return {
-      initialValues,
-      animations,
-    };
-  };
-  const outlineExiting = () => {
-    'worklet';
-    const animations = {
-      transform: [{
-        scale: withTiming(0, { duration: 200 })
-      }],
-      opacity: withTiming(0, { duration: 100 }),
-    };
-    const initialValues = {
-      transform: [{
-        scale: 1
-      }],
-      opacity: 1,
-    };
-    return {
-      initialValues,
-      animations,
-    };
-  };
 
   const provider = {
     name: `${params?.originProvider || params?.provider || "N/A"}`,
@@ -137,36 +93,10 @@ export default function Article() {
                 name='heart-outline'
               />
             </Button>
-            <Button onPress={onBookmark}>
-              {
-                bookmarked && (
-                  <Animated.View
-                    style={[animatedStyles]}
-                    exiting={exiting}
-                  >
-                    <Ionicons
-                      size={25}
-                      color={'#ffa32a'}
-                      name={'bookmark-sharp'}
-                    />
-                  </Animated.View>
-                )
-              }
-              {
-                !bookmarked && (
-                  <Animated.View
-                    entering={ZoomIn.springify()}
-                    exiting={outlineExiting}
-                  >
-                    <Ionicons
-                      size={25}
-                      color={'#111111'}
-                      name={'bookmark-outline'}
-                    />
-                  </Animated.View>
-                )
-              }
-            </Button>
+            <BookmarkButton
+              bookmarked={bookmarked}
+              onPress={onBookmark}
+            />
             <Button onPress={onOpenUrl}>
               <Ionicons
                 size={25}
