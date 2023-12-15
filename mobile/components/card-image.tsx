@@ -11,6 +11,10 @@ export default function CardImage({ style, className = '', containerClassName = 
 }) {
   const blurhash = generateRandomBlurhash();
 
+  if (!props.source || `${props?.source}`?.includes("undefined")) {
+    return null
+  }
+
   return (
     <Box className={`flex-row ${containerClassName}`}>
       <Box className={`absolute border-[3px] border-slate-900 left-3 top-4 h-full w-full ${borderContainerClassName}`} />

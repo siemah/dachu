@@ -193,7 +193,7 @@ export default function Article() {
           <CardImage
             className={"min-h-56 h-full"}
             contentFit='cover'
-            source={params.image}
+            source={params?.image}
             containerClassName='mb-2 md:h-100'
           />
           <Box className='flex-row'>
