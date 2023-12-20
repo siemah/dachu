@@ -23,6 +23,7 @@ import BookmarkButton from '../bookmark-button';
 import useBookmarks from '../../hook/use-bookmarks';
 import { getArticle } from '../../services/article';
 import globalLinks from '../../config/links';
+import Head from 'expo-router/head';
 
 dayjs.extend(relativeTime);
 
@@ -188,21 +189,27 @@ export default function TabScreen({ screen }: { screen: "rockets" | "celtics" | 
   }
 
   return (
-    <FlatList
-      data={articles}
-      ListHeaderComponent={ListHeaderComponent}
-      renderItem={renderItem}
-      contentContainerStyle={tailwind`gap-6 pb-8 md:flex-1`}
-      refreshing={query.isRefetching}
-      onRefresh={onRefresh}
-      numColumns={tailwind.prefixMatch("md") ? 3 : 1}
-      refreshControl={
-        <RefreshControl
-          refreshing={query.isRefetching}
-          onRefresh={onRefresh}
-          colors={["#8080b0", "#7fbcff"]}
-        />
-      }
-    />
+    <>
+      <Head>
+        <title>{screen}</title>
+        <meta name="description" content={`Latest news about the ${screen}`} />
+      </Head>
+      <FlatList
+        data={articles}
+        ListHeaderComponent={ListHeaderComponent}
+        renderItem={renderItem}
+        contentContainerStyle={tailwind`gap-6 pb-8 md:flex-1`}
+        refreshing={query.isRefetching}
+        onRefresh={onRefresh}
+        numColumns={tailwind.prefixMatch("md") ? 3 : 1}
+        refreshControl={
+          <RefreshControl
+            refreshing={query.isRefetching}
+            onRefresh={onRefresh}
+            colors={["#8080b0", "#7fbcff"]}
+          />
+        }
+      />
+    </>
   );
 }

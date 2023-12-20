@@ -24,6 +24,7 @@ import PostHog, { usePostHog } from 'posthog-react-native';
 import SentryNative from '@sentry/react-native';
 import SentryBrowser from '@sentry/browser';
 import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated';
+import Head from 'expo-router/head';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -277,6 +278,9 @@ export default function Prayer() {
 
   return (
     <Box className={`flex-1 gap-4 bg-[${screenColor}] pt-[${top}px] pb-[${bottom}px]`}>
+      <Head>
+        <title>Prayer Time</title>
+      </Head>
       <Container className='mt-4 flex-row'>
         <TextHighlight
           className='text-4xl font-bold capitalize'

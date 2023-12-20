@@ -14,7 +14,7 @@ import { useArticle } from '../../hook/use-article';
 import ArticleBody from '../../components/article-body';
 import { stringToUniqueNumber } from '../../helpers/data';
 import useBookmarks from '../../hook/use-bookmarks';
-import Animated, { ZoomIn, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import Head from 'expo-router/head';
 import BookmarkButton from '../../components/bookmark-button';
 
 export default function Article() {
@@ -76,6 +76,10 @@ export default function Article() {
 
   return (
     <Box className={`flex-1 bg-[#bfecff] pt-4 pt-[${top}px] pb-[${bottom}px]`}>
+      <Head>
+        <title>{params?.title}</title>
+        <meta name="description" content={`${params?.title}`} />
+      </Head>
       <Container className='border-b border-slate-400'>
         <Box className='flex-row justify-between gap-3 py-4'>
           <Button onPress={onGoBack}>
