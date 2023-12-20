@@ -15,19 +15,22 @@ app
 
 app
   .get('/home', async (c) => {
-    // const games = await getGames();
-    // const articles = await getNews(c.req);
     const response = await Promise.allSettled([
-      getGames(),
       getNews(c.req)
     ])
-    const [games, articles] = handleAllSettledResults(response);
+    const [articles] = handleAllSettledResults(response);
     // todo: get all basketball related news
     // todo: get all football related news
     return c.json({
-      games,
       articles
     });
+  })
+  .get('/games', async (c) => {
+    const response = await Promise.allSettled([
+      getGames(),
+    ])
+    const [games] = handleAllSettledResults(response);
+    return c.json(games);
   })
   .get('/article/:provider/:link', async ctx => {
     const provider = ctx.req.param("provider");

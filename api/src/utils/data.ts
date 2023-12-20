@@ -63,18 +63,18 @@ export function extractGamesFromSI([{ data: { matches } }]: any[]) {
         image: "https://duckduckgo.com/i/77f82172.png"
       },
       kickoff: {
-        global: `${_dt?.date}`,
+        global: (new Date(`${_dt?.date} ${_dt?.time}`)).getTime(),
         formatted: `${_dt?.date}`,
         timeFormatted: _dt?.time
       },
       homeTeam: {
         name: teams?.home?.mediumname,
-        image: `https://img.sportradar.com/ls/crest/medium/${teams?.home?.uid}.png`,
+        image: `https://img.sportradar.com/ls/crest/big/${teams?.home?.uid}.png`,
         score: result?.home,
       },
       awayTeam: {
         name: teams?.away?.mediumname,
-        image: `https://img.sportradar.com/ls/crest/medium/${teams?.away?.uid}.png`,
+        image: `https://img.sportradar.com/ls/crest/big/${teams?.away?.uid}.png`,
         score: result?.away,
       },
     });
