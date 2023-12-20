@@ -4,6 +4,7 @@ const domain = isProductionEnv
   : "http://192.168.1.33:8787"; // you can change this to your LAN IP address
 const globalLinks = {
   home: `${domain}/home`,
+  games: `${domain}/games`,
   article: `${domain}/article`,
   prayerTimes: `${domain}/prayer`,
 };

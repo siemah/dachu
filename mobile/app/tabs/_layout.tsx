@@ -20,7 +20,12 @@ export default function _layout() {
       tabBar={TabBar}
       screenOptions={screenOptions}
       sceneContainerStyle={sceneContainerStyle}
-    />
+    >
+      <Tabs.Screen name='index' />
+      <Tabs.Screen name='prayer' />
+      <Tabs.Screen name='bookmarks' />
+      <Tabs.Screen name='games' />
+    </Tabs>
     // </QueryClientProvider>
   )
 }

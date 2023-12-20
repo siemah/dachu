@@ -9,7 +9,6 @@ import { usePrayerTimes } from '../../hook/use-prayer-time';
 import Container from '../../components/container';
 import Text from '../../components/text';
 import RNSwitch from '../../components/switch';
-import TextHighlight from '../../components/text-highlight';
 import { FlatListRender } from '../../types/ui';
 import keyExtractor from '../../helpers/ui';
 import LoadingIndicator from '../../components/loading-indicator';
@@ -24,7 +23,7 @@ import PostHog, { usePostHog } from 'posthog-react-native';
 import SentryNative from '@sentry/react-native';
 import SentryBrowser from '@sentry/browser';
 import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated';
-import Head from 'expo-router/head';
+import MainLayout from '../../components/layout/main';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -277,18 +276,7 @@ export default function Prayer() {
   }, []);
 
   return (
-    <Box className={`flex-1 gap-4 bg-[${screenColor}] pt-[${top}px] pb-[${bottom}px]`}>
-      <Head>
-        <title>Prayer Time</title>
-      </Head>
-      <Container className='mt-4 flex-row'>
-        <TextHighlight
-          className='text-4xl font-bold capitalize'
-          highlightColor='#ffc32a'
-        >
-          Prayer Times
-        </TextHighlight>
-      </Container>
+    <MainLayout title={"Prayer Times"}>
       <FlatList
         keyExtractor={keyExtractor("prayer-times-item", "name")}
         ItemSeparatorComponent={ItemSeparatorComponent}
@@ -297,7 +285,7 @@ export default function Prayer() {
         data={prayerTimes.data}//prayerTimes.data
         contentContainerStyle={tailwind`flex-1`}
       />
-    </Box>
+    </MainLayout>
   );
 }
 

@@ -13,3 +13,27 @@ export type Article = {
     link?: string;
   }
 };
+
+export type Game = {
+  id: string | number;
+  uiKey: string | number;
+  competition: {
+    name: string;
+    image: string;
+  };
+  homeTeam: {
+    name: string;
+    image: string;
+    score: null | number;
+  };
+  awayTeam: {
+    name: string;
+    image: string;
+    score: null | number;
+  };
+  kickoff: {
+    global: number;
+    formatted: string;
+    timeFormatted: string;
+  }
+}

@@ -14,7 +14,7 @@ export function getIcon(index: number, isFocused: boolean): any {
   } else if (index === 2) {
     isFocused ? (icon = 'bookmarks') : (icon = 'bookmarks-outline');
   } else if (index === 3) {
-    isFocused ? (icon = 'search') : (icon = 'search-outline');
+    isFocused ? (icon = 'basketball') : (icon = 'basketball-outline');
   } else if (index === 4) {
     isFocused ? (icon = 'albums') : (icon = 'albums-outline');
   } else if (index === 5) {
@@ -38,6 +38,8 @@ export function getScreenColor(pathname: string) {
     color = "#f2f8fc";
   } else if (pathname.includes("bookmark")) {
     color = "#ceffd3";
+  } else if(pathname.includes("games")) {
+    color = "#f2f7bd";
   }
 
   return color;

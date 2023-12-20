@@ -19,6 +19,7 @@ import LoadingIndicator from '../../components/loading-indicator';
 import Animated, { FadeInDown, FadeOutUp } from 'react-native-reanimated';
 import { decodeHTMLEntity } from '../../helpers/data';
 import Head from 'expo-router/head';
+import MainLayout from '../../components/layout/main';
 
 export default function Bookmark() {
   const { top, bottom } = useSafeAreaInsets();
@@ -121,18 +122,7 @@ export default function Bookmark() {
   }
 
   return (
-    <Box className={`flex-1 gap-4 bg-[${screenColor}] pt-[${top}px] pb-[${bottom}px]`}>
-      <Head>
-        <title>Bookmarks</title>
-      </Head>
-      <Container className='mt-4 mb-2 flex-row'>
-        <TextHighlight
-          className='text-4xl font-bold capitalize'
-          highlightColor='#ffc32a'
-        >
-          Bookmarks
-        </TextHighlight>
-      </Container>
+    <MainLayout title='Bookmarks'>
       <FlatList
         keyExtractor={keyExtractor("bookmarks-item", "name")}
         renderItem={renderItem}
@@ -142,6 +132,7 @@ export default function Bookmark() {
         refreshing={loading}
         onRefresh={onRefresh}
         numColumns={tailwind.prefixMatch("md") ? 3 : 1}
+        initialNumToRender={20}
         refreshControl={
           <RefreshControl
             refreshing={loading}
@@ -150,6 +141,6 @@ export default function Bookmark() {
           />
         }
       />
-    </Box>
+    </MainLayout>
   )
 }
